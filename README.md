@@ -1,1 +1,1 @@
-项目
+这是yoonamessi的个人博客网站项目，基于hexo与Github，欢迎大家关注，网址www.yoonamessi.top!
