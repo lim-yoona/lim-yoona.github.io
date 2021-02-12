@@ -2,43 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://example.com/resources/index.html</loc>
+    <loc>http://yoonamessi.top/2021/02/10/hello-world/</loc>
+    
+    <lastmod>2021-02-12</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoonamessi.top/resources/index.html</loc>
     
     <lastmod>2021-02-11</lastmod>
     
   </url>
   
   <url>
-    <loc>http://example.com/about/index.html</loc>
+    <loc>http://yoonamessi.top/about/index.html</loc>
     
     <lastmod>2021-02-11</lastmod>
     
   </url>
   
   <url>
-    <loc>http://example.com/tags/index.html</loc>
+    <loc>http://yoonamessi.top/tags/index.html</loc>
     
     <lastmod>2021-02-11</lastmod>
     
   </url>
   
   <url>
-    <loc>http://example.com/categories/index.html</loc>
+    <loc>http://yoonamessi.top/categories/index.html</loc>
     
     <lastmod>2021-02-11</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://example.com/2021/02/10/hello-world/</loc>
-    
-    <lastmod>2021-02-10</lastmod>
     
   </url>
   
 
   <url>
-    <loc>http://example.com/</loc>
+    <loc>http://yoonamessi.top/</loc>
     <lastmod>2021-02-12</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
