@@ -9,8 +9,31 @@
     <atom:link href="http://yoonamessi.top/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>From small beginnings comes great things.</description>
-    <pubDate>Sat, 13 Feb 2021 03:56:51 GMT</pubDate>
+    <pubDate>Sat, 13 Feb 2021 08:00:46 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>华为通用软件开发实习生面试题</title>
+      <link>http://yoonamessi.top/2021/02/13/%E5%8D%8E%E4%B8%BA%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E9%A2%98/</link>
+      <guid>http://yoonamessi.top/2021/02/13/%E5%8D%8E%E4%B8%BA%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E9%A2%98/</guid>
+      <pubDate>Sat, 13 Feb 2021 07:57:50 GMT</pubDate>
+      
+        
+        
+      <description>&lt;h2 id=&quot;华为通用软件开发实习生面试题&quot;&gt;&lt;a href=&quot;#华为通用软件开发实习生面试题&quot; class=&quot;headerlink&quot; title=&quot;华为通用软件开发实习生面试题&quot;&gt;&lt;/a&gt;华为通用软件开发实习生面试题&lt;/h2&gt;&lt;p&gt;技术面手撕代码的原题~&lt;/p&gt;
+&lt;p&gt;&lt;im</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<h2 id="华为通用软件开发实习生面试题"><a href="#华为通用软件开发实习生面试题" class="headerlink" title="华为通用软件开发实习生面试题"></a>华为通用软件开发实习生面试题</h2><p>技术面手撕代码的原题~</p><p><img src="https://img-blog.csdnimg.cn/2021020921314069.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lvb25hTWVzc2k=,size_16,color_FFFFFF,t_70#pic_center"></p><p>要求用C++写</p><p>博主比较菜面试时候又比较紧张面试官又看着我写，因此当场只写出来一个通用的解法，本以为面试官会让我优化时间复杂度，结果没有，只是测试了一下我的代码，每个测试点都通过了</p><p>我的想法是，因为要求最大公共前缀嘛，结果肯定不可能比这些字符串中最短的长，所以首先求出最短的字符串长度假设长度为n，只考虑每个字符串的前n个字符，一来是避免不必要的运算，二来是避免访问字符串的时候数组越界带来不必要的bug，然后以第一个字符串为基准，每次检查剩下所有字符串的第i个字符是否与第一个字符串的第i个相等，如果出现不等，说明之前的i个字符已经不是公共前缀了，直接退出循环取前i-1个字符返回即可</p><p>面试时候写的C++代码如下：</p><pre><code>#include&lt;iostream&gt;#include&lt;vector&gt;using namespace std;string longestCommonPrefix(vector&lt;string&gt;&amp;strs)&#123;    int n=strs.size();//字符串个数     int min=strs[0].size();    for(int i=1;i&lt;n;i++)//求最短字符串长度     &#123;        if(strs[i].size()&lt;min)        min=strs[i].size();    &#125;    int i=0;    for(;i&lt;min;i++)    &#123;        int sign=1;        char c=strs[0][i];        for(int j=1;j&lt;n;j++)        &#123;            if(c!=strs[j][i])            &#123;                sign=2;                break;            &#125;        &#125;        if(sign==2)        break;    &#125;    return strs[0].substr(0,i);&#125;</code></pre>]]></content:encoded>
+      
+      
+      
+      
+      <comments>http://yoonamessi.top/2021/02/13/%E5%8D%8E%E4%B8%BA%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E9%A2%98/#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>深度学习概述</title>

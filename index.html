@@ -279,6 +279,104 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoonamessi.top/2021/02/13/%E5%8D%8E%E4%B8%BA%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Cong">
+      <meta itemprop="description" content="From small beginnings comes great things.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yoonamessi">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/02/13/%E5%8D%8E%E4%B8%BA%E9%80%9A%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E5%AE%9E%E4%B9%A0%E7%94%9F%E9%9D%A2%E8%AF%95%E9%A2%98/" class="post-title-link" itemprop="url">华为通用软件开发实习生面试题</a>
+        </h2>
+
+        <div class="post-meta">
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-13 15:57:50 / 修改时间：16:00:46" itemprop="dateCreated datePublished" datetime="2021-02-13T15:57:50+08:00">2021-02-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="华为通用软件开发实习生面试题"><a href="#华为通用软件开发实习生面试题" class="headerlink" title="华为通用软件开发实习生面试题"></a>华为通用软件开发实习生面试题</h2><p>技术面手撕代码的原题~</p>
+<p><img src="https://img-blog.csdnimg.cn/2021020921314069.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1lvb25hTWVzc2k=,size_16,color_FFFFFF,t_70#pic_center"></p>
+<p>要求用C++写</p>
+<p>博主比较菜面试时候又比较紧张面试官又看着我写，因此当场只写出来一个通用的解法，本以为面试官会让我优化时间复杂度，结果没有，只是测试了一下我的代码，每个测试点都通过了</p>
+<p>我的想法是，因为要求最大公共前缀嘛，结果肯定不可能比这些字符串中最短的长，所以首先求出最短的字符串长度假设长度为n，只考虑每个字符串的前n个字符，一来是避免不必要的运算，二来是避免访问字符串的时候数组越界带来不必要的bug，然后以第一个字符串为基准，每次检查剩下所有字符串的第i个字符是否与第一个字符串的第i个相等，如果出现不等，说明之前的i个字符已经不是公共前缀了，直接退出循环取前i-1个字符返回即可</p>
+<p>面试时候写的C++代码如下：</p>
+<pre><code>#include&lt;iostream&gt;
+#include&lt;vector&gt;
+
+using namespace std;
+
+string longestCommonPrefix(vector&lt;string&gt;&amp;strs)
+&#123;
+    int n=strs.size();//字符串个数 
+    int min=strs[0].size();
+    for(int i=1;i&lt;n;i++)//求最短字符串长度 
+    &#123;
+        if(strs[i].size()&lt;min)
+        min=strs[i].size();
+    &#125;
+    int i=0;
+    for(;i&lt;min;i++)
+    &#123;
+        int sign=1;
+        char c=strs[0][i];
+        for(int j=1;j&lt;n;j++)
+        &#123;
+            if(c!=strs[j][i])
+            &#123;
+                sign=2;
+                break;
+            &#125;
+        &#125;
+        if(sign==2)
+        break;
+    &#125;
+    return strs[0].substr(0,i);
+&#125;
+</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoonamessi.top/2021/02/13/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%A6%82%E8%BF%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -413,7 +511,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
