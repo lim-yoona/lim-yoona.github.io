@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Innovative Technology for CPU Based Attestation and Sealing论文翻译 | 月梦の技术博客</title><meta name="author" content="月梦"><meta name="copyright" content="月梦"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Innovative Technology for CPU Based Attestation and Sealing是Intel SGX技术的官方论文，本文将翻译这篇文章。SGX技术提供了enclave环境，当今比较火的机密计算技术一般就是基于SGX技术来实现，当然也有其他的可以提供enclave环境的技术，例如TrustZone等，但是SGX应用更多，且相比之下更安全些。 本文中形似（注：··">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Innovative Technology for CPU Based Attestation and Sealing论文翻译">
+<meta property="og:url" content="https://ymiir.top/2023/05/25/2023-05-25-Innovative%20Technology%20for%20CPU%20Based%20Attestation%20and%20Sealing/index.html">
+<meta property="og:site_name" content="月梦の技术博客">
+<meta property="og:description" content="Innovative Technology for CPU Based Attestation and Sealing是Intel SGX技术的官方论文，本文将翻译这篇文章。SGX技术提供了enclave环境，当今比较火的机密计算技术一般就是基于SGX技术来实现，当然也有其他的可以提供enclave环境的技术，例如TrustZone等，但是SGX应用更多，且相比之下更安全些。 本文中形似（注：··">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2023/05/25/p9Hy7p6.jpg">
+<meta property="article:published_time" content="2023-05-25T11:50:00.000Z">
+<meta property="article:modified_time" content="2024-08-01T17:13:00.206Z">
+<meta property="article:author" content="月梦">
+<meta property="article:tag" content="SGX">
+<meta property="article:tag" content="机密计算">
+<meta property="article:tag" content="内存安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2023/05/25/p9Hy7p6.jpg"><link rel="shortcut icon" href="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041627853.jpg"><link rel="canonical" href="https://ymiir.top/2023/05/25/2023-05-25-Innovative%20Technology%20for%20CPU%20Based%20Attestation%20and%20Sealing/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Innovative Technology for CPU Based Attestation and Sealing论文翻译',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-02 01:13:00'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041627853.jpg" onerror="onerror=null;src='https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/essay/"><i class="fa-fw fa fa-book"></i><span> 随笔</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.ax1x.com/2023/05/25/p9Hy7p6.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="月梦の技术博客"><span class="site-name">月梦の技术博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/essay/"><i class="fa-fw fa fa-book"></i><span> 随笔</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Innovative Technology for CPU Based Attestation and Sealing论文翻译</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-25T11:50:00.000Z" title="发表于 2023-05-25 19:50:00">2023-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-01T17:13:00.206Z" title="更新于 2024-08-02 01:13:00">2024-08-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%BA%E5%AF%86%E8%AE%A1%E7%AE%97/">机密计算</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">6.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>19分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Innovative Technology for CPU Based Attestation and Sealing论文翻译"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><strong>Innovative Technology for CPU Based Attestation and Sealing</strong>是Intel SGX技术的官方论文，本文将翻译这篇文章。<br>SGX技术提供了enclave环境，当今比较火的机密计算技术一般就是基于SGX技术来实现，当然也有其他的可以提供enclave环境的技术，例如TrustZone等，但是SGX应用更多，且相比之下更安全些。<br><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9Hy7p6.jpg" alt="sgx论文封面"></p>
+<p>本文中形似<strong>（注：···）</strong>的批注是我的批注，而非原文  </p>
+<h1 id="Innovative-Technology-for-CPU-Based-Attestation-and-Sealing-基于CPU的认证与密封新技术"><a href="#Innovative-Technology-for-CPU-Based-Attestation-and-Sealing-基于CPU的认证与密封新技术" class="headerlink" title="Innovative Technology for CPU Based Attestation and Sealing(基于CPU的认证与密封新技术)"></a>Innovative Technology for CPU Based Attestation and Sealing(基于CPU的认证与密封新技术)</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>Intel正在开发Intel®Software Guard Extensions(Intel®SGX)技术，这是Intel®架构的扩展，<strong>用于生成受保护的软件容器。容器被称为飞地。在飞地内部，软件的代码、数据和堆栈受到硬件强制访问控制策略的保护，这些策略可以防止对飞地内容的攻击。</strong>在一个软件和服务通过互联网部署的时代<strong>（注：也就是云计算时代）</strong>，关键是能够通过有线或空中<strong>安全地远程提供飞地</strong>，有把握地知道机密受到保护，并能够将机密保存在非易失性存储器中以备将来使用。<br>本文描述了允许向飞地提供机密<strong>（注：应该指用户想要保护的数据）</strong>的技术组件。这些组件包括<strong>用于对在飞地内运行的软件生成一个基于硬件的证明的方法，以及用于飞地软件密封机密并将其导出到飞地之外（例如将其存储在非易失性存储器中）的方法，以便只有相同的飞地软件能够将其解封回其原始形式。</strong>   </p>
+<h2 id="1-INTRODUCTION"><a href="#1-INTRODUCTION" class="headerlink" title="1. INTRODUCTION"></a>1. INTRODUCTION</h2><p>在一个软件和服务通过互联网部署的时代，Intel®Software Guard Extensions(Intel®SGX)和Extensions to Intel®Architecture）使服务提供商能够通过有线或无线提供具有敏感内容的应用程序，并确信其机密得到了适当保护。<strong>为了做到这一点，服务提供者必须能够确切地知道远程平台上运行的是什么软件，以及它在哪个环境中执行。</strong>   </p>
+<h2 id="1-1-Software-Lifecycle"><a href="#1-1-Software-Lifecycle" class="headerlink" title="1.1 Software Lifecycle"></a>1.1 Software Lifecycle</h2><p>启用Intel®SGX的软件不附带敏感数据<strong>（注：指用户的软件，但是还未开始使用，软件可以开辟enclave）</strong>。在这个软件被安装后，它向服务提供商通信，以便将数据远程提供给飞地。然后软件对数据进行加密并存储以备将来使用。 图1阐明了软件完成此过程所需的步骤。<br><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9H6fv8.png" alt="sgx002"></p>
+<ol>
+<li><strong>飞地启动</strong>–<strong>不受信任的应用程序启动飞地环境以保护服务提供商的软件。在构建飞地时，会记录一个安全日志，反映飞地的内容及其加载方式。</strong> 这个安全日志是飞地的“度量”(即<strong>Measurement</strong>)。   </li>
+<li><strong>Attestation</strong>–飞地联系服务提供者，以便将其敏感数据提供给飞地。 该平台生成一个安全断言（<strong>secure assertion</strong>），用于标识硬件环境和飞地。<strong>（注：安全断言被插入到程序中，用于检测安全问题）</strong>  </li>
+<li><strong>Provisioning</strong>–服务提供者评估飞地的可信度。它使用<strong>Attestation</strong>来建立安全通信并向飞地提供敏感数据。使用安全通道，服务提供者将数据发送到飞地。   </li>
+<li><strong>Sealing&#x2F;Unsealing</strong> –飞地使用一个持久的基于硬件的加密密钥来安全地加密和存储其敏感数据，以确保只有在可信环境恢复时才能检索数据。<strong>（注：可信环境未就绪，不解密。）</strong>  </li>
+<li><strong>Software Upgrade</strong> – 服务提供商可能需要飞地软件更新。为了简化数据从旧软件版本到新版本的迁移，软件可以从旧版本请求密封(seal)密钥来解封数据，并请求新版本的密封，这样密封的数据就不会被以前版本的软件使用。</li>
+</ol>
+<p>最后，当平台所有者计划转移平台所有权时，应使其所有权期间可用的秘密不可访问。 Intel®SGX包含一个用户拥有的特殊持久值，当更改该值时，将更改软件可用的所有密钥。   </p>
+<h2 id="1-2-安全模型"><a href="#1-2-安全模型" class="headerlink" title="1.2 安全模型"></a>1.2 安全模型</h2><p>希望向远程平台提供秘密的服务提供者必须事先知道远程平台的保护策略满足要部署的秘密的保护要求。 根据Intel®SGX的安全模型[1]，负责保护机密的可信计算基础(TCB)包括处理器的固件和硬件，仅包括飞地内的软件。<br>一个Enclave Writer可以使用Intel®SGX的专用sealing和attestation组件，这些组件支持以下安全模型断言，以向服务提供商证明机密将根据预期的安全级别受到保护：   </p>
+<ul>
+<li>Intel®SGX为Enclave实例提供了向平台请求Enclave’ identity的安全断言的方法。<br><strong>（注：Enclave’ identity就是Enclace Measurement，Enclave实例可以通过请求安全断言来验证自己的Enclave Measurement是否正确，并确保自己所在的环境是安全和可信任的。）</strong><br>Intel®SGX还允许飞地将飞地瞬时的数据绑定到断言。   </li>
+<li>Intel®SGX为Enclave实例提供了验证来自同一平台上其他Enclave实例的断言的方法。   </li>
+<li>Intel®SGX为远程实体提供了验证来自Enclave实例的断言的方法。   </li>
+<li>Intel®SGX允许Enclave实例获取绑定到平台和Enclave的密钥。<br>Intel®SGX阻止软件访问其他飞地标识的密钥</li>
+</ul>
+<h2 id="1-3-Intel®-SGX-Instructions指令"><a href="#1-3-Intel®-SGX-Instructions指令" class="headerlink" title="1.3 Intel® SGX Instructions指令"></a>1.3 Intel® SGX Instructions指令</h2><p>Intel®SGX体系结构[1]提供了硬件指令EREPORT和EGETKEY，以支持认证attestation和密封sealing。接受SGX安全模式的秘密拥有者可以依靠这些指示向负责秘密的TCB报告。<br>为了创建飞地环境，不受信任的软件使用Intel®SGX指令。这些指令还计算已启动环境的加密Measurement。本文第2节进一步描述了这些过程。<br>为了启用attestation和sealing，硬件提供了两个附加指令EREPORT和EGETKEY。 EREPORT指令提供了一个证据结构，该结构以加密的方式绑定到硬件上，以供认证验证者使用。 EGETKEY为Enclave软件提供了访问认证和密封过程中使用的“Report”和“Seal”密钥的权限。 第3节讨论了如何使用这些指令来提供飞地的证明，第4节讨论了如何保护传递给飞地的秘密。<br>在第5节中，我们简要回顾了在平台中建立远程信任的相关工作。   </p>
+<h2 id="2-MEASUREMENT"><a href="#2-MEASUREMENT" class="headerlink" title="2 MEASUREMENT"></a>2 MEASUREMENT</h2><p>Intel®SGX架构负责建立用于认证和密封的identities。对于每个飞地，它提供两个measurement寄存器，MRENCLAVE和MRSIGNER；MRENCLAVE提供了所构造的飞地代码和数据的identity，MRSIGNER提供了飞地权限的identity。这些值在构建飞地时被记录，并在飞地执行开始前最终确定。只有TCB有权写入这些寄存器，以确保在认证和密封时能够准确反映identities。    </p>
+<h2 id="2-1-MRENCLAVE-Enclave-Identity"><a href="#2-1-MRENCLAVE-Enclave-Identity" class="headerlink" title="2.1 MRENCLAVE - Enclave Identity"></a>2.1 MRENCLAVE - Enclave Identity</h2><p>“Enclave Identity”是MRENCLAVE的值，它是内部日志的SHA-256[2]摘要，记录了在构建Enclave时所做的所有活动[1]。 日志由以下信息组成：   </p>
+<ul>
+<li>页的内容（代码、数据、堆栈、堆）。   </li>
+<li>飞地中页的相对位置。   </li>
+<li>与页关联的任何安全标志。</li>
+</ul>
+<p>一旦通过EINIT指令完成了enclave初始化，就不再对MRENCLAVE进行更新。 最后MRENCLAVE的值是一个SHA-256摘要，它以加密方式标识放置在飞地中的代码、数据和堆栈、飞地页的放置顺序和位置，以及每个页的安全属性。对这些变量的任何更改都将导致MRENCLAVE中的值不同。<br><strong>（注：MRENCLAVE中存的应该就是Enclave Measurement）</strong>  </p>
+<h2 id="2-2-MRSIGNER-Sealing-Identity"><a href="#2-2-MRSIGNER-Sealing-Identity" class="headerlink" title="2.2 MRSIGNER - Sealing Identity"></a>2.2 MRSIGNER - Sealing Identity</h2><p>该飞地有第二个用于数据保护的identity，称为“Sealing Identity”。Sealing Identity包括“Sealing Authority”、产品ID和版本号。 Sealing Authority是在分发前对飞地进行签名的实体，通常是飞地构建者。飞地构建者向硬件提供一个RSA签名的飞地证书（SIGSTRUCT），该证书包含Enclave Identity，MRENCLAVE和密封机构的公钥。 硬件使用证书中包含的公钥检查证书上的签名，然后将测量的MRENCLAVE值与签名版本进行比较。如果这些检查通过，则在MRSIGNER寄存器中存储封签机构的公钥的哈希值。需要注意的是，如果多个飞地由同一封签机构签名，它们都将具有相同的MRSIGNER值。如第4节所示，Sealing Identity的值可用于封存数据，在某种程度上，来自同一封存机构的飞地（例如，同一飞地的不同版本）可以共享和迁移其封存数据。   </p>
+<h2 id="3-ATTESTATION"><a href="#3-ATTESTATION" class="headerlink" title="3 ATTESTATION"></a>3 ATTESTATION</h2><p>证明是证明一个软件已经在平台上被正确实例化的过程。 在Intel®SGX中，这是一种机制，通过这种机制，另一方可以获得信任，即正确的软件安全地运行在启用的平台上的飞地内。 为此，Intel®SGX体系结构生成一个attestation assertion（认证断言）（如图2所示），它传达以下信息：   </p>
+<ul>
+<li>软件环境的identities被证明  </li>
+<li>任何不可测量状态的细节（例如，软件环境可能运行的模式）   </li>
+<li>软件环境希望与自身相关联的数据   </li>
+<li>与平台TCB绑定的密码来制作这个assertion</li>
+</ul>
+<p><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9HcLod.png" alt="sgx003"></p>
+<p>Intel®SGX体系结构提供了一种机制，用于在运行在同一平台上的两个飞地（本地认证）之间创建authenticated assertion，以及另一种机制，用于扩展本地认证，以向平台外的第三方提供断言（远程认证）。<strong>（注：SGX提供两种机制，本地证明和远程证明）</strong><br>最后，为了在系统中获得最大的可信度，认证密钥应该只被绑定到一个特定的平台TCB上。如果平台TCB发生变化，例如通过微码更新，应替换平台认证密钥，以正确地代表TCB的可信度。  </p>
+<h2 id="3-1-Intra-Platform-Enclave-Attestation"><a href="#3-1-Intra-Platform-Enclave-Attestation" class="headerlink" title="3.1 Intra-Platform Enclave Attestation"></a>3.1 Intra-Platform Enclave Attestation</h2><p>应用程序开发人员可能希望多个飞地相互协作来来执行一些更复杂的功能。为了实现这个，他们需要一种机制来让一个enclave证明另一个。为了这个目的，SGX提供了EREPORT指令。<br>当这个指令被一个飞地调用时，EREPORT产生一个签名的结构，称为REPORT。REPORT结构包括飞地的两个identities，与飞地相关联的属性（属性标识模式和在ECREATE期间建立的其他属性），硬件TCB的可信度，以及飞地开发者希望传递给目标飞地的额外信息，以及一个消息认证码（MAC）标记。目标飞地将验证MAC，允许它确定创建REPORT的飞地是否在同一平台上运行。<br>MAC被一个称作“Report Key”的密钥产生。如表1所示，Report Key只被目标飞地和EREPORT指令知道。目标飞地可以得到他自己的Report Key通过EGETKEY指令，EGETKEY为飞地提供一系列密钥，包括Report Key，可用于对称加密和身份验证。目标飞地使用Report Key通过REPORT结构重新计算MAC，核实这个REPORT是由证明（reporting）飞地产生的。Intel®SGX架构使用AES128-CMAC [3]作为MAC算法。<br><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9HczSP.png" alt="sgx004"></p>
+<p>每个REPORT结构也包括一个256bit的用户数据字段。这个字段将enclave内的数据绑定到enclave的identity（如REPORT中所述）。该字段可用于使用辅助数据扩展REPORT，通过将其填充为辅助数据的哈希摘要，然后该摘要与REPORT一起提供。使用用户数据字段使飞地能够构建更高层次的协议，在自身和另一个实体之间形成安全通道。<br>例如，通过交换在飞地内使用双方同意的参数随机生成的公共Diffie-Hellman密钥的报告，飞地可以生成一个经过验证的共享秘密，并使用它来保护它们之间的进一步通信。Intel®体系结构支持通过可供飞地软件使用的RDRAND指令[4]生成真正的随机值。<br>下图显示了一个示例流程，说明两个飞地在同一平台上如何相互验证，并验证对方在同一平台上的一个飞地内运行，因此符合Intel®SGX的安全模型。<br><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9Hgpy8.png" alt="sgx005"></p>
+<ol>
+<li>在飞地A和B之间建立通信路径后，飞地A获得飞地B的MRENCLAVE值。请注意，此步骤中的通信路径不必是安全的。  </li>
+<li>飞地A与飞地B的MRENCLAVE一起调用EREPORT指令来为飞地B创建一个签名的REPORT。飞地A通过不可信的通信路径将其报告传输到飞地B。  </li>
+<li>收到来自A飞地的报告后：<br>飞地B调用EGETKEY来检索它的Report Key，重新在REPORT结构上计算MAC，并将结果与REPORT携带的MAC进行比较。MAC值的匹配肯定了A确实是一个与飞地B运行在同一平台上的飞地，因此A也运行在一个遵循Intel®SGX的安全模式的环境中。<br><strong>（注：飞地B应该是用飞地A的Report Key来重新计算MAC，实际上这块说调用EGETKEY我不太明白，因为EGETKEY按理只能拿到自己的Report Key）</strong><br>一旦验证了TCB的固件和硬件组件，飞地B就可以检查飞地A的报告，以验证TCB的软件组件：</li>
+</ol>
+<ul>
+<li>MRENCLAVE反映了在飞地内运行的软件映像的内容。  </li>
+<li>签名先生反映了密封人的identity<br>飞地B可以回复一个为飞地A创建的REPORT，通过使用刚刚收到的REPORT中的MRENCLAVE。<br>飞地B向飞地A发送其REPORT，然后，飞地A可以以类似于飞地B的方式验证该报告，确认飞地B与飞地A存在于同一平台上。</li>
+</ul>
+<h2 id="3-2-Inter-Platform-Enclave-Attestation"><a href="#3-2-Inter-Platform-Enclave-Attestation" class="headerlink" title="3.2 Inter-Platform Enclave Attestation"></a>3.2 Inter-Platform Enclave Attestation</h2><p>用于平台内飞地认证的验证机制使用对称密钥系统，其中只有验证REPORT结构的飞地和创建REPORT的EREPORT指令才能访问验证密钥。创建一个可以在平台之外进行验证的认证需要使用非对称密码学。英特尔®SGX启用了一个特殊的飞地，称为Quoting Enclave，专门用于远程证明。Quoting Enclave在平台上验证来自其他enclave的REPORTs，使用上面描述的平台内飞地验证方法，然后用使用特定于设备（私有）非对称密钥创建的签名替换这些报告上的MAC。这个过程的输出被称为QUOTE。  </p>
+<h3 id="3-2-1-Intel®-Enhanced-Privacy-ID-EPID"><a href="#3-2-1-Intel®-Enhanced-Privacy-ID-EPID" class="headerlink" title="3.2.1 Intel® Enhanced Privacy ID (EPID)"></a>3.2.1 Intel® Enhanced Privacy ID (EPID)</h3><p>当在平台的整个生命周期中使用少量密钥时，使用标准非对称签名方案的认证引起了隐私问题。为了克服这个问题，英特尔对TPM [5] &amp;[6]使用的直接匿名认证方案引入了一个扩展，称为Intel®增强隐私ID（EPID）[7]，被Quoting Enclave用来签名飞地认证。<br>EPID是一种组签名方案，它允许平台对对象进行签名，而不需要唯一地标识平台或链接不同的签名。相反，每个签名者都属于一个“组”，验证者使用该组的公钥来验证签名。EPID支持两种签名模式。在EPID的完全匿名模式下，验证者无法将给定的签名与组中的特定成员关联起来。在伪名模式下，EPID验证者能够确定它之前是否已经验证了该平台。  </p>
+<h3 id="3-2-2-The-Quoting-Enclave"><a href="#3-2-2-The-Quoting-Enclave" class="headerlink" title="3.2.2 The Quoting Enclave"></a>3.2.2 The Quoting Enclave</h3><p>Quoting Enclave创建了用于签名平台认证的EPID密钥，然后由EPID后端基础设施进行认证。EPID密钥不仅表示平台，还表示底层硬件的可信度。<br>当飞地系统运行时，只有Quoting Enclave可以访问EPID密钥，并且EPID密钥被绑定到处理器的固件版本。因此，可以看成一个QUOTE是由处理器本身发出的。  </p>
+<h3 id="3-2-3-Example-Remote-Attestation-Process"><a href="#3-2-3-Example-Remote-Attestation-Process" class="headerlink" title="3.2.3 Example Remote Attestation Process"></a>3.2.3 Example Remote Attestation Process</h3><p>图4显示了一个示例，说明在用户平台上具有安全处理元素的应用程序如何向具有挑战性的服务提供者提供认证，以便从提供者接收一些增值服务。请注意，许多用法很少使用此过程（例如在注册时）为飞地提供一个通信密钥，然后直接在后续连接中使用。<br><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/05/25/p9Hg8YR.png" alt="sgx006"></p>
+<ol>
+<li>最初，应用程序需要来自平台外部的服务，并与服务提供系统建立通信。服务提供商向应用程序发出challenge，以证明它确实在一个或多个飞地内运行必要的组件。challenge本身包含一个nonce（一次性数字），用于验证通信的活跃性。<strong>（注：challenge应该就是nonce，一个一次性的数字）</strong>    </li>
+<li>该应用程序提供了Quoting Enclave的Enclave Identity，并将其与提供者的challenge一起传递到该应用程序的飞地。  </li>
+<li>这个飞地产生了一个manifest，包括对challenge的响应和一个临时生成的公钥，由challenger用来将秘密传回这个飞地。然后，它生成manifest的hash摘要，并将其作为EREPORT指令的用户数据包含在内，该指令将生成一个将manifest绑定到飞地的报告，如第3.2节所述。然后，该飞地会将REPORT发送到应用程序。  </li>
+<li>应用程序将REPORT转发给Quoting Enclave进行签名。  </li>
+<li>Quoting Enclave使用EGETKEY检索它的Report Key并且核实REPORT。Quoting Enclave创建QUOTE结构并且使用EPID密钥签名。Quoting Enclave返回QUOTE结构给应用程序。  </li>
+<li>应用程序发送QUOTE结构和一些相关的支持数据manifest给服务challenger。  </li>
+<li>challenger使用EPID公钥证书和撤销信息或者认证验证服务来验证QUOTE上的签名。他之后使用USERDATA来核实manifest的完整性，并且检查manifest是否有对它在步骤1中发送的challenge的响应。</li>
+</ol>
+<h2 id="4-Sealing"><a href="#4-Sealing" class="headerlink" title="4 Sealing"></a>4 Sealing</h2><p>当飞地被实例化时，当其维护在飞地边界内时，硬件为其数据提供保护（机密性和完整性）。然而，当飞地进程退出时，飞地将被摧毁，在飞地内得到安全的任何数据都将丢失。如果这些数据意味着以后会被重用，那么该飞地必须做出特殊安排，在该飞地之外存储这些数据。<br>上面的表1显示，EGETKEY提供了对持久性Sealing Keys的访问，飞地软件可以使用这些密钥来加密和完整性保护数据。Intel®SGX对该飞地使用的加密方案没有任何限制。当与平台提供的其他服务结合时，如单调计数器，对数据也有可能进行Replay保护。  </p>
+<h2 id="4-1-Intel®-SGX-supported-Sealing-Policies"><a href="#4-1-Intel®-SGX-supported-Sealing-Policies" class="headerlink" title="4.1 Intel® SGX supported Sealing Policies"></a>4.1 Intel® SGX supported Sealing Policies</h2><p>当调用EGETKEY时，飞地选择条件或策略，飞地可以访问此sealing key。这些政策有助于控制敏感数据对该飞地未来版本的可访问性。<br>Intel®SGX支持Seal Keys的两种策略：  </p>
+<ul>
+<li>Sealing to the Enclave Identity  </li>
+<li>Sealing to the Sealing Identity</li>
+</ul>
+<p>Sealing to the Enclave Identity产生一个密钥，可用于这个确切的飞地的任何实例.<strong>（注：如果这个seal key是基于Enclave Identity生成的，则该密文可以被部署在相同enclave Identity的任何实例所使用。在SGX中，将数据密封到enclave的身份标识上生成的密钥可以在相同身份标识的不同enclave实例中共享。）</strong>这并不允许未来的软件访问这个飞地的秘密。Sealing to the Sealing Identity产生一个密钥，可被用于一些别的由相同Sealing Authority签名的enclaves。这可用于允许较新的飞地访问以前版本存储的数据。<br>只有飞地的后续实例化，执行具有相同策略规范的EGETKEY，才能检索Sealing Key并解密以前实例化使用该密钥密封的数据。  </p>
+<h3 id="4-1-1-Sealing-to-the-Enclave-Identity"><a href="#4-1-1-Sealing-to-the-Enclave-Identity" class="headerlink" title="4.1.1 Sealing to the Enclave Identity"></a>4.1.1 Sealing to the Enclave Identity</h3><p>当Sealing to the Enclave Identity，EGETKEY操作会基于enclave的MRENCLAVE的值生成密钥。任何影响飞地measurement的变化都将产生不同的密钥。这导致每个飞地都有不同的密钥，提供了飞地之间的完全隔离。使用此策略的一个副产品是，同一飞地的不同版本也将具有不同的密封密钥，从而阻止脱机数据迁移。<br>此策略对于在发现漏洞后不应该使用旧数据的用法非常有用。例如，如果数据是身份验证凭据，则服务提供者可以撤销这些凭据并提供新的凭据。访问旧的凭证可能是有害的。  </p>
+<h3 id="4-1-2-Sealing-to-the-Sealing-Identity"><a href="#4-1-2-Sealing-to-the-Sealing-Identity" class="headerlink" title="4.1.2 Sealing to the Sealing Identity"></a>4.1.2 Sealing to the Sealing Identity</h3><p>当Sealing to the Sealing Identity，EGETKEY操作会基于enclave的MRSIGNER的值和enclave的版本生成密钥。MRSIGNER反映了签署该飞地证书的Sealing Authority的key&#x2F;identity。<br>这种方式相比上一种的优点是，它允许将封闭的数据在飞地版本之间离线迁移。Sealing Authority可以签署多个飞地，并使他们可以检索相同的seal key。这些飞地可以透明地访问被其他飞地封闭的数据。<br>当sealing to a Sealing Authority，不应该允许较旧的软件访问由较新的软件创建的数据。当发布新软件的原因是为了修复安全问题时，这是正确的。为了方便这一点，Sealing Authority可以选择规定一个安全版本号（SVN）作为密封件标识的一部分。EGETKEY允许飞地指定在生成Seal Key时使用哪个SVN。它将只允许飞地为其Sealing Identity或以前的Identity指定SVNs。当飞地密封数据时，它可以选择设置允许访问该Sealing Key的飞地的最小SVN值。这可以保护未来的秘密不受易受攻击的旧软件的访问，但仍然支持无缝升级过渡，即以前的所有秘密都在升级后可用。<br>SVN与产品版本号不同。一个产品可能有多个版本，具有不同的功能，但具有相同的SVN。飞地Writer有责任与他们的客户沟通（如果必要的话），哪些产品版本具有相同的安全等价性。  </p>
+<h2 id="4-2-Removing-Secrets-from-a-Platform"><a href="#4-2-Removing-Secrets-from-a-Platform" class="headerlink" title="4.2 Removing Secrets from a Platform"></a>4.2 Removing Secrets from a Platform</h2><p>该体系结构提出了一种被称为OwnerEpoch的机制，它允许平台所有者通过更改单个值来更改系统中的所有键。由于在通过EGETKEY指令请求密钥时会自动包含OwnerEpoch，使用特定的OwnerEpoch值密封的数据对象，只有在将OwnerEpoch设置为相同的值时才能打开。<br>该机制的主要目的是允许平台所有者在将平台转移给其他人（永久或暂时）之前，以一个简单且可恢复的步骤拒绝对平台上所有密封秘密的访问。在转移平台之前，平台所有者可以通过使用OEM提供的hooks，将OwnerEpoch更改为一个不同的值。如果临时转移（如平台维护），平台返回后，平台所有者可以将OwnerEpoch恢复到原始值，并恢复对密封秘密的访问。  </p>
+<h2 id="5-RELATED-WORK"><a href="#5-RELATED-WORK" class="headerlink" title="5. RELATED WORK"></a>5. RELATED WORK</h2><p>略···  </p>
+<h2 id="6-CONCLUSIONS"><a href="#6-CONCLUSIONS" class="headerlink" title="6. CONCLUSIONS"></a>6. CONCLUSIONS</h2><p>在本文中，提出了一种新的硬件辅助机制，以Intel®架构的新ISA扩展形式，允许在安全环境（称为飞地）中执行的应用软件进行安全attestation和sealing。<br>ISA扩展为飞地软件提供了手段，以向另一方证明它已在平台上正确实例化，并扩展为正确的软件，并在一个已启用的平台上的飞地内安全运行。这种认证不需要验证者理解飞地正在执行的平台软件上下文，并且仅限于信任飞地软件。<br>Intel®SGX体系结构还提供了一种机制来获得持久的唯一密钥，软件可以使用该密钥来密封秘密并稍后打开秘密。密封机制还提供了在一个飞地的软件升级时无缝转换秘密的能力。<br>认证和密封机制以一种可扩展的方式定义，支持多个飞地同时运行，每个飞地处理自己的秘密，并与远程各方进行安全通信，并向他们证明他们符合他们的安全策略。  </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ymiir.top">月梦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ymiir.top/2023/05/25/2023-05-25-Innovative%20Technology%20for%20CPU%20Based%20Attestation%20and%20Sealing/">https://ymiir.top/2023/05/25/2023-05-25-Innovative Technology for CPU Based Attestation and Sealing/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ymiir.top" target="_blank">月梦の技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SGX/">SGX</a><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%AF%86%E8%AE%A1%E7%AE%97/">机密计算</a><a class="post-meta__tags" href="/tags/%E5%86%85%E5%AD%98%E5%AE%89%E5%85%A8/">内存安全</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2023/05/25/p9Hy7p6.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/08/27/2023-08-27-It%20seems%20like%20the%20kubelet%20isn't%20running%20or%20healthy./" title="解决方法-It seems like the kubelet isn't running or healthy."><img class="cover" src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/09/03/pPDsm40.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">解决方法-It seems like the kubelet isn't running or healthy.</div></div></a></div><div class="next-post pull-right"><a href="/2023/04/29/2023-04-29-rust%E5%AE%89%E8%A3%85%E4%B8%8E%E5%85%A5%E9%97%A8/" title="Rust安装与入门"><img class="cover" src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s1.ax1x.com/2023/09/04/pPrPUFe.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Rust安装与入门</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041627853.jpg" onerror="this.onerror=null;this.src='https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg'" alt="avatar"/></div><div class="author-info__name">月梦</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lim-yoona"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lim-yoona" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:ymiirtop@sina.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">月梦の技术博客，欢迎大佬来访！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Innovative-Technology-for-CPU-Based-Attestation-and-Sealing-%E5%9F%BA%E4%BA%8ECPU%E7%9A%84%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%AF%86%E5%B0%81%E6%96%B0%E6%8A%80%E6%9C%AF"><span class="toc-number">1.</span> <span class="toc-text">Innovative Technology for CPU Based Attestation and Sealing(基于CPU的认证与密封新技术)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Abstract"><span class="toc-number">1.1.</span> <span class="toc-text">Abstract</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-INTRODUCTION"><span class="toc-number">1.2.</span> <span class="toc-text">1. INTRODUCTION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-Software-Lifecycle"><span class="toc-number">1.3.</span> <span class="toc-text">1.1 Software Lifecycle</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-%E5%AE%89%E5%85%A8%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text">1.2 安全模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-Intel%C2%AE-SGX-Instructions%E6%8C%87%E4%BB%A4"><span class="toc-number">1.5.</span> <span class="toc-text">1.3 Intel® SGX Instructions指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-MEASUREMENT"><span class="toc-number">1.6.</span> <span class="toc-text">2 MEASUREMENT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-MRENCLAVE-Enclave-Identity"><span class="toc-number">1.7.</span> <span class="toc-text">2.1 MRENCLAVE - Enclave Identity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-MRSIGNER-Sealing-Identity"><span class="toc-number">1.8.</span> <span class="toc-text">2.2 MRSIGNER - Sealing Identity</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-ATTESTATION"><span class="toc-number">1.9.</span> <span class="toc-text">3 ATTESTATION</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Intra-Platform-Enclave-Attestation"><span class="toc-number">1.10.</span> <span class="toc-text">3.1 Intra-Platform Enclave Attestation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Inter-Platform-Enclave-Attestation"><span class="toc-number">1.11.</span> <span class="toc-text">3.2 Inter-Platform Enclave Attestation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-1-Intel%C2%AE-Enhanced-Privacy-ID-EPID"><span class="toc-number">1.11.1.</span> <span class="toc-text">3.2.1 Intel® Enhanced Privacy ID (EPID)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-2-The-Quoting-Enclave"><span class="toc-number">1.11.2.</span> <span class="toc-text">3.2.2 The Quoting Enclave</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-3-Example-Remote-Attestation-Process"><span class="toc-number">1.11.3.</span> <span class="toc-text">3.2.3 Example Remote Attestation Process</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Sealing"><span class="toc-number">1.12.</span> <span class="toc-text">4 Sealing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-Intel%C2%AE-SGX-supported-Sealing-Policies"><span class="toc-number">1.13.</span> <span class="toc-text">4.1 Intel® SGX supported Sealing Policies</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-1-Sealing-to-the-Enclave-Identity"><span class="toc-number">1.13.1.</span> <span class="toc-text">4.1.1 Sealing to the Enclave Identity</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-2-Sealing-to-the-Sealing-Identity"><span class="toc-number">1.13.2.</span> <span class="toc-text">4.1.2 Sealing to the Sealing Identity</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-Removing-Secrets-from-a-Platform"><span class="toc-number">1.14.</span> <span class="toc-text">4.2 Removing Secrets from a Platform</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-RELATED-WORK"><span class="toc-number">1.15.</span> <span class="toc-text">5. RELATED WORK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-CONCLUSIONS"><span class="toc-number">1.16.</span> <span class="toc-text">6. CONCLUSIONS</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/05/02/2024-05-02-ymdb/" title="ymdb-一个分布式键值存储系统"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ymdb-一个分布式键值存储系统"/></a><div class="content"><a class="title" href="/2024/05/02/2024-05-02-ymdb/" title="ymdb-一个分布式键值存储系统">ymdb-一个分布式键值存储系统</a><time datetime="2024-05-02T11:50:00.000Z" title="发表于 2024-05-02 19:50:00">2024-05-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/28/2024-04-28-ReentrantLock/" title="Java ReentrantLock原理"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java ReentrantLock原理"/></a><div class="content"><a class="title" href="/2024/04/28/2024-04-28-ReentrantLock/" title="Java ReentrantLock原理">Java ReentrantLock原理</a><time datetime="2024-04-28T11:50:00.000Z" title="发表于 2024-04-28 19:50:00">2024-04-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/25/2024-03-25-Topological-Sorting/" title="拓扑排序"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="拓扑排序"/></a><div class="content"><a class="title" href="/2024/03/25/2024-03-25-Topological-Sorting/" title="拓扑排序">拓扑排序</a><time datetime="2024-03-25T11:50:00.000Z" title="发表于 2024-03-25 19:50:00">2024-03-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/09/2024-03-10-Spring-understanding&amp;summary/" title="Spring框架的理解与总结"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring框架的理解与总结"/></a><div class="content"><a class="title" href="/2024/03/09/2024-03-10-Spring-understanding&amp;summary/" title="Spring框架的理解与总结">Spring框架的理解与总结</a><time datetime="2024-03-09T11:50:00.000Z" title="发表于 2024-03-09 19:50:00">2024-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/02/13/2024-02-13-Raft-Algo-Summary/" title="Raft 共识算法总结"><img src="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Raft 共识算法总结"/></a><div class="content"><a class="title" href="/2024/02/13/2024-02-13-Raft-Algo-Summary/" title="Raft 共识算法总结">Raft 共识算法总结</a><time datetime="2024-02-13T11:50:00.000Z" title="发表于 2024-02-13 19:50:00">2024-02-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 月梦</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><imgsrc="https://ymiirtop-tc.oss-cn-beijing.aliyuncs.com/202408041640719.jpg" data-original="https://haiyong.site/img/icp.png"> <a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank">陕ICP备2024037249号-1</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '5CRP1aMpDr9cZeJmB43Ipp5h-gzGzoHsz',
+      appKey: 'vXVvSrnv8vgU3pnWNyOfw6K4',
+      avatar: '',
+      serverURLs: 'https://5crp1amp.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
