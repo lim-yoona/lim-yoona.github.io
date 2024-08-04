@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ymdb-一个分布式键值存储系统 | 月梦の技术博客</title><meta name="author" content="月梦"><meta name="copyright" content="月梦"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="ymdb 是我开源的一款简易的分布式键值存储系统，适用于分布式系统初学者练手或者应届生写上简历，这篇文章将对 ymdb 做一个全面的介绍（建议仅用作学习用途，应用于生产是危险的，因为 ymdb 尚不完善）。   ymdb 使用 Go 语言开发，从面试情况来看，面试官还是很喜欢问这个项目的，并且有几个面试官表示这样的项目比较抓眼球，因为它是一个偏底层的并且不是一个千篇一律（俗称“烂大街”）的项目，因">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ymdb-一个分布式键值存储系统">
+<meta property="og:url" content="http://example.com/2024/05/02/2024-05-02-ymdb/index.html">
+<meta property="og:site_name" content="月梦の技术博客">
+<meta property="og:description" content="ymdb 是我开源的一款简易的分布式键值存储系统，适用于分布式系统初学者练手或者应届生写上简历，这篇文章将对 ymdb 做一个全面的介绍（建议仅用作学习用途，应用于生产是危险的，因为 ymdb 尚不完善）。   ymdb 使用 Go 语言开发，从面试情况来看，面试官还是很喜欢问这个项目的，并且有几个面试官表示这样的项目比较抓眼球，因为它是一个偏底层的并且不是一个千篇一律（俗称“烂大街”）的项目，因">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg">
+<meta property="article:published_time" content="2024-05-02T11:50:00.000Z">
+<meta property="article:modified_time" content="2024-08-04T07:46:07.097Z">
+<meta property="article:author" content="月梦">
+<meta property="article:tag" content="开源">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="存储">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg"><link rel="shortcut icon" href="https://s11.ax1x.com/2023/09/04/pPrMqrF.jpg"><link rel="canonical" href="http://example.com/2024/05/02/2024-05-02-ymdb/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ymdb-一个分布式键值存储系统',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-04 15:46:07'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading.gif" data-original="https://s11.ax1x.com/2023/09/04/pPrMqrF.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="月梦の技术博客"><span class="site-name">月梦の技术博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">ymdb-一个分布式键值存储系统</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-02T11:50:00.000Z" title="发表于 2024-05-02 19:50:00">2024-05-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-04T07:46:07.097Z" title="更新于 2024-08-04 15:46:07">2024-08-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E6%BA%90/">开源</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="ymdb-一个分布式键值存储系统"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><a target="_blank" rel="noopener" href="https://github.com/lim-yoona/ymdb"><strong><em>ymdb</em></strong></a> 是我开源的一款简易的分布式键值存储系统，适用于分布式系统初学者练手或者应届生写上简历，这篇文章将对 <strong><em>ymdb</em></strong> 做一个全面的介绍（建议仅用作学习用途，应用于生产是危险的，因为 <strong><em>ymdb</em></strong> 尚不完善）。  </p>
+<p><strong><em>ymdb</em></strong> 使用 <em>Go</em> 语言开发，从面试情况来看，面试官还是很喜欢问这个项目的，并且有几个面试官表示这样的项目比较抓眼球，因为它是一个偏底层的并且不是一个千篇一律（俗称“烂大街”）的项目，因此写在简历上不失为一个好的选择。  </p>
+<h2 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h2><p>要做一个分布式存储系统，需要考虑以下三个点：  </p>
+<ol>
+<li>存储  </li>
+<li>分区  </li>
+<li>复制</li>
+</ol>
+<p>存储是设计一个存储系统必须要考虑的，而分区和复制则是设计一个分布式系统需要考虑的。  </p>
+<p>在存储部分，当前的键值存储有三种技术方案，一种是 <a target="_blank" rel="noopener" href="https://github.com/facebook/rocksdb"><em>RocksDB</em></a> 采用的 <em>LSMT(Log Structured Merge Tree)</em> 方案；一种是 <a target="_blank" rel="noopener" href="https://github.com/rosedblabs/rosedb"><em>RoseDB</em></a> 采用的 <em>Bitcask</em> 方案；一种是 <a target="_blank" rel="noopener" href="https://github.com/redis/redis"><em>Redis</em></a> 的方案。考虑到我想做一个持久的键值存储系统，所以 <em>Redis</em> 这种基于内存的方式首先排除，<em>Redis</em> 的持久化仅用作备份以及主从复制，并不会从磁盘去拿数据。<em>LSMT</em> 实现起来较为复杂，且其虽然写效率很高，但读效率却较差，主要由于 <em>LSMT</em> 是在磁盘上的多层结构，可能要查好几层才能查到数据。因此，我最终选择 <em>RoseDB</em> 的方案来实现键值存储，即将所有的 <em>key</em> 存储在内存中，并将 <em>key</em> 对应的值在磁盘中的位置与 <em>key</em> 一同存放，而将 <em>value</em> 都存储在磁盘上，读取数据只需要一次磁盘IO，写入数据由于是追加写，可以利用到 <em>page cache</em> ，这样读写效率都很高。  </p>
+<p>在分区部分，我们要做的是对数据的分区，由于我们将所有的 <em>key</em> 都存放在内存中，所以内存的大小就是我们可以存储的数据量的瓶颈，所以我们需要进行数据分区，保证每个节点上只存储部分数据而不是全量数据，这样就使得存储系统中可以存储的数据总量不受单台计算机的内存和磁盘大小的约束。借鉴 <em>Redis</em> ,我采用<strong>一致性哈希</strong>来做数据分区，不过没有 <em>Redis</em> 那么复杂。  </p>
+<p>在容错部分，做为一个分布式的系统，必须具有容错的能力，现有的知名的分布式系统例如 <em>hdfs</em> 、<em>gfs</em> 以及 <em>kafka</em> 等都是通过将一份数据存储多份副本来保证可靠性的，**<em>ymdb</em>** 亦是如此，我设计一个分区内的多个节点存储当前分区数据的多个副本来提供容错性。我采用 <em>Raft</em> 算法来实现分区内节点间的分布式共识，首先 <em>Raft</em> 易于理解，其次 <em>Raft</em> 被许多知名开源软件广泛使用，例如 <em>etcd</em> 、<em>tikv</em> 、<em>Consul</em> 等。</p>
+<h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><a target="_blank" rel="noopener" href="https://imgse.com/i/pFJnTYQ"><img src="/img/loading.gif" data-original="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" alt="ymdb整体架构"></a></p>
+<p><strong><em>ymdb</em></strong> 的整体架构如图所示，客户端通过一致性哈希去确定数据所在的分区，每个分区内包含多个节点，存储本分区内数据的多个副本，在某一个具体的节点上，内存中存储所有的 <em>key</em> ，并使用跳表(<em>skip-list</em>)来作为 <em>key</em> 的索引结构以加快查找，<em>value</em> 以追加写的方式存储在磁盘上。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p><strong><em>ymdb</em></strong> 在内存中存储所有的 <em>key</em> ，并采用跳表作为 <em>key</em> 的索引。选择跳表的原因在于其易于实现、维护成本低且范围查询友好，由于是内存索引，所以没有必要选择平衡树徒增维护成本。</p>
+<p>相关代码位于项目的 <strong>index</strong> 包下，我这里直接采用了对第三方跳表实现的封装，<code>put()</code> 方法将 <em>key</em> 以及对应 <em>value</em> 所在的位置写入跳表；<code>get()</code>方法通过 <em>key</em> 获得其对应 <em>value</em> 在磁盘上的位置；<code>delete()</code>方法仅在跳表中删除指定 <em>key</em> 。  </p>
+<p>虽然我这里使用了第三方的跳表实现，但是跳表易于实现，也可以自己实现，我之前使用 <em>C++</em> 实现过一版，具体思路在于使用 <em>vector</em> 作为跳表的节点，设置 <em>vector</em> 长度为跳表的高度，<em>vector</em> 的元素以下标顺序 <code>0-i</code> 分别存储该节点在跳表中的 <code>0-i</code> 层的信息，以随机的方式选择每个节点的高度。  </p>
+<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h3><p>所有的 <em>value</em> 以追加写的方式存储在磁盘上的 <strong>WAL</strong> 文件中，这部分代码在项目的 <strong>db</strong> 包下，是 <strong><em>ymdb</em></strong> 存储引擎的实现，目前对数据的操作包含 <code>put</code>、<code>get</code> 以及 <code>delete</code>。  </p>
+<h2 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h2><p>采用一致性哈希来实现数据的分区，一致性哈希的基本原理可以看 <a target="_blank" rel="noopener" href="https://ymiir.asia/%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98/consistent-hashing">一致性哈希算法</a>，这里我也是采用了第三方实现，代码位于项目的 <strong>cluster-cli.go</strong> ，也就是说 <strong><em>ymdb</em></strong> 在客户端完成对于数据的定位，随后再向相应的分区发送数据的读写请求。  </p>
+<p>虽然我这里使用了第三方的一致性哈希实现，但是自己实现起来应该也较为简单，由于需要在哈希环上顺时针去寻找数据所在的分区，所以首先我们需要一个有序的数据结构，比如红黑树，首先对分区做哈希得到32位哈希值，存到红黑树中，之后对数据做哈希得到32位哈希值，在红黑树中搜索第一个比自己大的节点就是这个数据对应的分区。如果需要增加虚拟节点，只需要给真实分区加上一些信息，依旧做哈希得到哈希值，如果有数据映射到该分区，则可以进一步映射到真实的分区上。  </p>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><p>采用 <em>Raft</em> 算法来实现节点间的分布式共识，<em>Raft</em> 算法的基本原理可以看 <a target="_blank" rel="noopener" href="https://ymiir.asia/%E5%88%86%E5%B8%83%E5%BC%8F/raft-algo-summary"><em>Raft</em> 共识算法总结</a>。当客户端给一个分区发出写数据指令，该分区的 <em>Leader</em> 会来处理这个指令，<em>Leader</em> 负责将这条指令复制给其余的节点，其余的节点执行指令实现数据存储，并返回给 <em>Leader</em> ，当 <em>Leader</em> 收到集群中半数以上节点的响应时，就认为这条指令可以提交了，于是执行指令并给客户端返回。  </p>
+<p><strong><em>ymdb</em></strong> 基于 <em>Raft</em> 算法，因此 <strong><em>ymdb</em></strong> 整体上是一个 <code>CP</code> 型的分布式系统，也就是说，保证强一致性并且具有分区容错性。  </p>
+<p>我采用了 <a target="_blank" rel="noopener" href="https://github.com/hashicorp">HashiCorp</a> 的 <em>Raft</em> 实现，代码位于项目的 <strong>raft</strong> 包下，<code>application.go</code> 下定义了自己的 <em>FSM</em> ,即有限状态机，主要是需要实现 <code>Apply()</code> 方法来定义日志应用的逻辑。由于我们客户端使用 <code>grpc</code> 来与 <strong><em>ymdb</em></strong> 集群做交互，所以还需要编写 <code>proto</code> 文件来定义 <code>grpc</code> 通信所需要的消息和服务，同时还需要在 <code>application.go</code> 中实现一个 <code>rpc</code> 服务端，实现 <code>SendMsg()</code> 方法处理 <code>rpc</code> 请求。另外，<em>Raft</em> 集群节点间的通信是第三方库实现好的，无需考虑。  </p>
+<h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><p>客户端采用 <code>grpc</code> 与多个 <em>Raft</em> 集群进行通信，客户端代码位于 <code>cluster-cli.go</code> 中，根据不同的指令和 <em>key</em> 向不同的数据分区发送不同的 <code>rpc</code> 请求，集群中任意一个节点收到 <code>rpc</code> 请求会把请求转发给 <em>Leader</em> 进行处理，<em>Leader</em> 处理消息的逻辑见 <code>application.go</code> 下的 <code>rpcInterface</code> 的 <code>SendMsg()</code> 方法，首先应用日志，之后从响应 <code>channel</code> 中取得结果；应用日志的具体逻辑在 <code>dataTracker</code> 的 <code>Apply()</code> 方法中，这里应用日志也就是交给存储引擎来执行数据读写命令，这里把消息放在了一个消息队列也就是 <code>MsQueue</code> 中，存储引擎会从中取命令然后执行，达到一个异步处理的效果。  </p>
+<h2 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h2><p>为了实现崩溃一致性，节点应该具有崩溃恢复的能力，**<em>ymdb</em>** 在磁盘上额外存放了一个用于恢复的 <em>WAL</em> 文件，记录修改数据的指令，在每次执行修改类型的命令之前，首先将命令写入到日志中，类似于 <em>MySQL</em> 的 <em>redo log</em> ，这样即使节点崩溃。在节点恢复之后只需要执行日志中的指令即可恢复数据，实现崩溃一致性。  </p>
+<p>写入日志的代码位于项目的 <strong>route</strong> 包下，在 <code>Handle()</code> 方法中，根据消息类型执行不同的操作，只有 <strong>PUT</strong> 和 <strong>DELETE</strong> 操作才会去调用 <code>writeWAL()</code> 方法写入恢复日志。  </p>
+<p>崩溃恢复的代码位于项目的 <strong>db</strong> 包下的 <code>Restore()</code> 方法以及 <code>NewDB()</code> 方法，在创建 <code>DB</code> 对象时，如果发现指定目录下已经有日志文件，则置恢复状态位 <code>isRestore</code> 为真，执行恢复操作，否则创建新的日志文件。  </p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p><strong><em>ymdb</em></strong> 目前尚有大量优化空间，我能想到的如下：</p>
+<ol>
+<li>增加缓存系统。对于随机读取，无法利用到操作系统的 <em>page cache</em> ，导致每次查询稳定一次磁盘IO，是拖慢速度的，如果增加了缓存系统，便可以大大提升效率。然而引入缓存系统就必须要考虑其带来的数据不一致性，尚需要斟酌。  </li>
+<li>服务发现。目前系统中的节点数量和地址信息在数据库启动时就已经确定了，无法动态扩展，可以增加服务注册与发现机制来实现节点的动态增删，具体可以使用 <a target="_blank" rel="noopener" href="https://github.com/apache/zookeeper"><em>zookeeper</em></a> 来实现。  </li>
+<li>节点间数据迁移。由于使用了一致性哈希作为数据分区算法，增加和删除分区必然导致分区数据的变化，所以需要实现分区间数据的迁移，可以使用子进程来实现。</li>
+</ol>
+<p>具体 <strong><em>ymdb</em></strong> 的使用可以参考 <a target="_blank" rel="noopener" href="https://github.com/lim-yoona/ymdb/blob/main/README.md">README.md</a> 以及 <a target="_blank" rel="noopener" href="https://github.com/lim-yoona/ymdb/tree/main/example">示例</a>。  </p>
+<h2 id="面试"><a href="#面试" class="headerlink" title="面试"></a>面试</h2><p>面试中对这个项目的考察多从以下几点进行提问： </p>
+<ol>
+<li>为什么选择跳表作为内存索引，不选择别的</li>
+<li>跳表的原理是什么，应该如何实现 </li>
+<li>为什么选择一致性哈希，还了解别的数据分区算法吗 </li>
+<li>一致性哈希知道怎么实现吗 </li>
+<li>一致性哈希存在哪些问题，如何解决 </li>
+<li>为什么选择 <em>Raft</em> 算法来做分布式共识，还了解别的分布式共识算法吗</li>
+<li><em>Raft</em> 的领导选举介绍一下</li>
+<li><em>Raft</em> 的 <em>Leader</em> 挂了会发生什么</li>
+<li><em>Raft</em> 是强一致的吗，如何保证强一致的</li>
+<li><em>Raft</em> 是如何解决脑裂问题的</li>
+<li><em>CAP</em> 定理介绍一下</li>
+<li><strong><em>ymdb</em></strong> 跟 <em>Redis</em> 集群有哪些不同之处</li>
+<li>做过压测吗，性能如何</li>
+</ol>
+<p>这就是我对 <strong><em>ymdb</em></strong> 的整体介绍，包括之后的优化思路以及面试常见问题，有任何问题可在评论区交流。  </p>
+<p><em>MIT6.824</em> 的实验最终也会实现一个分布式的键值存储系统，然如果时间不充裕，听完 <em>MIT</em> 的全英课再自己实现 <em>Raft</em> 也需要较长时间，出于练手的考虑，直接采用第三方 <em>Raft</em> 快速构建一个分布式系统也是可以的，并且面试官很少会关注到 <em>Raft</em> 算法的具体实现。  </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">月梦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/05/02/2024-05-02-ymdb/">http://example.com/2024/05/02/2024-05-02-ymdb/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">月梦の技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%80%E6%BA%90/">开源</a><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><a class="post-meta__tags" href="/tags/%E5%AD%98%E5%82%A8/">存储</a></div><div class="post_share"><div class="social-share" data-image="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="https://s11.ax1x.com/2023/09/04/pPrMqrF.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">月梦</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lim-yoona" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:ymiirtop@sina.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">月梦の技术博客，欢迎大佬来访！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">技术选型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">整体架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8"><span class="toc-number">3.</span> <span class="toc-text">存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98"><span class="toc-number">3.1.</span> <span class="toc-text">内存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A3%81%E7%9B%98"><span class="toc-number">3.2.</span> <span class="toc-text">磁盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8C%BA"><span class="toc-number">4.</span> <span class="toc-text">分区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">复制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1"><span class="toc-number">6.</span> <span class="toc-text">通信</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B4%A9%E6%BA%83%E6%81%A2%E5%A4%8D"><span class="toc-number">7.</span> <span class="toc-text">崩溃恢复</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96"><span class="toc-number">8.</span> <span class="toc-text">优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E8%AF%95"><span class="toc-number">9.</span> <span class="toc-text">面试</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/05/02/2024-05-02-ymdb/" title="ymdb-一个分布式键值存储系统"><img src="/img/loading.gif" data-original="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ymdb-一个分布式键值存储系统"/></a><div class="content"><a class="title" href="/2024/05/02/2024-05-02-ymdb/" title="ymdb-一个分布式键值存储系统">ymdb-一个分布式键值存储系统</a><time datetime="2024-05-02T11:50:00.000Z" title="发表于 2024-05-02 19:50:00">2024-05-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 月梦</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><imgsrc="/img/loading.gif" data-original="https://haiyong.site/img/icp.png"> <a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank">陕ICP备2024037249号-1</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,d=o();function o(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=o());for(var e,i=0;i<d.length;i++)0<=(e=(e=d[i]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,a,n,o=d[i];e=function(){d=d.filter(function(t){return o!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(o)},(t=o).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,n=t.getAttribute("data-original"),a.onload=function(){t.src=n,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=n},t.src!==n&&(a.src=n)))}()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)}(this);</script></body></html>
