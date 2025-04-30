@@ -18,72 +18,55 @@
     -moz-animation: Gradient 10s ease infinite;
     animation: Gradient 10s ease infinite !important;
 }
-​
 @-webkit-keyframes Gradient {
     0% {
         background-position: 0% 50%;
     }
-​
     50% {
         background-position: 100% 50%;
     }
-​
     100% {
         background-position: 0% 50%;
     }
 }
-​
 @-moz-keyframes Gradient {
     0% {
         background-position: 0% 50%;
     }
-​
     50% {
         background-position: 100% 50%;
     }
-​
     100% {
         background-position: 0% 50%;
     }
 }
-​
 @keyframes Gradient {
     0% {
         background-position: 0% 50%;
     }
-​
     50% {
         background-position: 100% 50%;
     }
-​
     100% {
         background-position: 0% 50%;
     }
 }
-​
 /* 个人信息Follow me按钮 */
 #aside-content>.card-widget.card-info>#card-info-btn {
     background-color: #3eb8be;
     border-radius: 8px;
 }
-​
 #aside-content>.sticky_layout>.card-widget {
     background: rgba(255, 255, 255, .8);
-​
-​
 }
-​
 /*文章页面*/
 .layout>#post {
     background: rgba(255, 255, 255, .8);
 }
-​
 /*分类页面*/
 .layout>#page {
-​
     background: rgba(255, 255, 255, .6);
 }
-​
 /*时间轴页面*/
 .layout>#archive {
     background: rgba(255, 255, 255, .6);
