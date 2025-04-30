@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>缓存击穿、缓存穿透与缓存雪崩 | 月梦の技术博客</title><meta name="author" content="月梦"><meta name="copyright" content="月梦"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="缓存是计算机系统中应用非常广泛的技术，最经典的，操作系统中处处是缓存，缓存可以大大提升数据访问速率。     在业务中，数据库（MySQL）面对大量的并发请求，会出现两个问题:    每次请求都需要查询数据库，速度很慢；   数据库无法承受如此大的请求流量，可能引起数据库宕机；  为解决这两个问题，一般会在内存中设置缓存，通常是使用Redis作为缓存，对于数据库的查询请求首先查询缓存，如果查不到，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存击穿、缓存穿透与缓存雪崩">
+<meta property="og:url" content="https://ymiir.top/posts/71a0db6b.html">
+<meta property="og:site_name" content="月梦の技术博客">
+<meta property="og:description" content="缓存是计算机系统中应用非常广泛的技术，最经典的，操作系统中处处是缓存，缓存可以大大提升数据访问速率。     在业务中，数据库（MySQL）面对大量的并发请求，会出现两个问题:    每次请求都需要查询数据库，速度很慢；   数据库无法承受如此大的请求流量，可能引起数据库宕机；  为解决这两个问题，一般会在内存中设置缓存，通常是使用Redis作为缓存，对于数据库的查询请求首先查询缓存，如果查不到，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg">
+<meta property="article:published_time" content="2023-12-03T11:50:00.000Z">
+<meta property="article:modified_time" content="2024-08-01T17:13:00.206Z">
+<meta property="article:author" content="月梦">
+<meta property="article:tag" content="分布式缓存">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg"><link rel="shortcut icon" href="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg"><link rel="canonical" href="https://ymiir.top/posts/71a0db6b.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '缓存击穿、缓存穿透与缓存雪崩',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-02 01:13:00'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg" onerror="onerror=null;src='https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301332668.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://z1.ax1x.com/2023/12/01/pisYxbD.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="月梦の技术博客"><span class="site-name">月梦の技术博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">缓存击穿、缓存穿透与缓存雪崩</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-12-03T11:50:00.000Z" title="发表于 2023-12-03 19:50:00">2023-12-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-01T17:13:00.206Z" title="更新于 2024-08-02 01:13:00">2024-08-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98/">分布式缓存</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="缓存击穿、缓存穿透与缓存雪崩"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>缓存是计算机系统中应用非常广泛的技术，最经典的，操作系统中处处是缓存，缓存可以大大提升数据访问速率。    </p>
+<p>在业务中，数据库（<code>MySQL</code>）面对大量的并发请求，会出现两个问题:  </p>
+<ol>
+<li>每次请求都需要查询数据库，速度很慢；  </li>
+<li>数据库无法承受如此大的请求流量，可能引起数据库宕机；</li>
+</ol>
+<p>为解决这两个问题，一般会在内存中设置缓存，通常是使用<code>Redis</code>作为缓存，对于数据库的查询请求首先查询缓存，如果查不到，再去查询数据库。  </p>
+<p>引入缓存之后又会面临三个新的问题，即缓存击穿、缓存穿透以及缓存雪崩。  </p>
+<h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><p>当缓存中没有某个数据，但是数据库中有这个数据时，对于数据的访问会直接访问数据库，于是——  </p>
+<p>一个热点<code>key</code>每时每刻都在接受大量的并发访问，当这个热点<code>key</code>的缓存过期时，大量的并发请求同时涌入到数据库中，导致后端数据库的压力陡然增大，引发<code>缓存击穿</code>。</p>
+<p>概括来讲，就是由于缓存<code>key</code>过期，导致大量请求涌入后端数据库而造成数据库压力骤然增大。  </p>
+<h3 id="如何解决缓存击穿？"><a href="#如何解决缓存击穿？" class="headerlink" title="如何解决缓存击穿？"></a>如何解决缓存击穿？</h3><ol>
+<li>既然缓存击穿是由于热点缓存<code>key</code>的过期导致的，那么一种方法是设置热点<code>key</code>永不过期。  </li>
+<li>使用分布式锁，当查询缓存未命中时，首先申请分布式锁，再去访问后端数据库，拿到数据之后缓存到缓存中；别的请求得不到锁，就无法请求后端数据库，待解锁后，直接查询缓存，从而有效地解决了大量请求涌入后端数据库的问题。</li>
+</ol>
+<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><p>缓存穿透指查询缓存未命中，同时后端数据库中也没有这个数据，那么Mysql就只能返回一个空对象，表示此次查询失败。如果这样的请求非常多，又或者有攻击者恶意地持续不断发出这样的查询请求，会给后端数据库带来很大的压力甚至崩溃，这就是<code>缓存穿透</code>。  </p>
+<h3 id="如何解决缓存穿透？"><a href="#如何解决缓存穿透？" class="headerlink" title="如何解决缓存穿透？"></a>如何解决缓存穿透？</h3><ol>
+<li>缓存空对象。当返回空对象的请求到达时，缓存一个空对象，这样下一次同样的请求到达，就会查询缓存，而不会访问后端数据库。缺点就是，如果缓存大量空对象，占用了缓存的空间。  </li>
+<li>布隆过滤器。利用布隆过滤器可以判断元素不存在的特性，将一些数据存储在布隆过滤器中，用户访问数据时，首先查询布隆过滤器，如果数据不存在，那么就拒绝查询，从而避免了大量对于空对象的查询。</li>
+</ol>
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><p>缓存雪崩是指为一批缓存<code>key</code>设置了相同的过期时间，那么当这个过期时间到达时，这些缓存<code>key</code>同时失效，从而导致大量的访问涌入后端数据库，造成后端数据库压力陡然增大，形成<code>缓存雪崩</code>。  </p>
+<p>有两种情况会造成<code>缓存雪崩</code>：  </p>
+<ol>
+<li>多个缓存<code>key</code>同时过期  </li>
+<li>缓存系统宕机</li>
+</ol>
+<h3 id="如何解决缓存雪崩？"><a href="#如何解决缓存雪崩？" class="headerlink" title="如何解决缓存雪崩？"></a>如何解决缓存雪崩？</h3><p>解决大批<code>key</code>同时过期：  </p>
+<ol>
+<li>设置多级缓存，这样即使缓存失效或者多个缓存<code>key</code>同时过期，也不会造成<code>缓存雪崩</code>.  </li>
+<li>使用锁或者队列，避免大量的并发请求访问后端数据库  </li>
+<li>随机设置缓存失效时间  </li>
+<li>不设置过期时间  </li>
+<li>在分布式负载均衡场景下，可以使用一致性哈希算法来解决由于分布式集群容量动态改变而带来的<code>缓存雪崩</code></li>
+</ol>
+<p>解决缓存系统宕机问题：  </p>
+<ol>
+<li>服务熔断或请求限流机制。服务熔断是指当缓存系统宕机时，暂停业务对于缓存系统的访问，直接返回错误；请求限流机制只允许少部分请求可以访问后端数据库。  </li>
+<li>构建Redis缓存高可用集群。</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ymiir.top">月梦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ymiir.top/posts/71a0db6b.html">https://ymiir.top/posts/71a0db6b.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ymiir.top" target="_blank">月梦の技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98/">分布式缓存</a></div><div class="post_share"><div class="social-share" data-image="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b33c725c.html" title="一致性哈希算法"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">一致性哈希算法</div></div></a></div><div class="next-post pull-right"><a href="/posts/29f40393.html" title="Java反射机制"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java反射机制</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/b33c725c.html" title="一致性哈希算法"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-04</div><div class="title">一致性哈希算法</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg" onerror="this.onerror=null;this.src='https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301332668.jpg'" alt="avatar"/></div><div class="author-info__name">月梦</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lim-yoona"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lim-yoona" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:ymiirtop@sina.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">月梦の技术博客，欢迎大佬来访！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="toc-number">1.</span> <span class="toc-text">缓存击穿</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">如何解决缓存击穿？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="toc-number">2.</span> <span class="toc-text">缓存穿透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">如何解决缓存穿透？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="toc-number">3.</span> <span class="toc-text">缓存雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">如何解决缓存雪崩？</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/8bd819b4.html" title="ymdb-一个分布式键值存储系统"><img src="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ymdb-一个分布式键值存储系统"/></a><div class="content"><a class="title" href="/posts/8bd819b4.html" title="ymdb-一个分布式键值存储系统">ymdb-一个分布式键值存储系统</a><time datetime="2024-05-02T11:50:00.000Z" title="发表于 2024-05-02 19:50:00">2024-05-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a5f6c176.html" title="Java ReentrantLock原理"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java ReentrantLock原理"/></a><div class="content"><a class="title" href="/posts/a5f6c176.html" title="Java ReentrantLock原理">Java ReentrantLock原理</a><time datetime="2024-04-28T11:50:00.000Z" title="发表于 2024-04-28 19:50:00">2024-04-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb40efc5.html" title="拓扑排序"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="拓扑排序"/></a><div class="content"><a class="title" href="/posts/fb40efc5.html" title="拓扑排序">拓扑排序</a><time datetime="2024-03-25T11:50:00.000Z" title="发表于 2024-03-25 19:50:00">2024-03-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/48fea39d.html" title="Spring框架的理解与总结"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring框架的理解与总结"/></a><div class="content"><a class="title" href="/posts/48fea39d.html" title="Spring框架的理解与总结">Spring框架的理解与总结</a><time datetime="2024-03-09T11:50:00.000Z" title="发表于 2024-03-09 19:50:00">2024-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/aec78dbb.html" title="Raft 共识算法总结"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Raft 共识算法总结"/></a><div class="content"><a class="title" href="/posts/aec78dbb.html" title="Raft 共识算法总结">Raft 共识算法总结</a><time datetime="2024-02-13T11:50:00.000Z" title="发表于 2024-02-13 19:50:00">2024-02-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 月梦</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"> <a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank">陕ICP备2024037249号-1</a> | <a href="https://beian.mps.gov.cn/#/"  style="color:white" target="_blank">京公网安备11010802044980号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '5CRP1aMpDr9cZeJmB43Ipp5h-gzGzoHsz',
+      appKey: 'vXVvSrnv8vgU3pnWNyOfw6K4',
+      avatar: '',
+      serverURLs: 'https://5crp1amp.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

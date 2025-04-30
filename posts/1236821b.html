@@ -1,0 +1,300 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Java IO知识总结 | 月梦の技术博客</title><meta name="author" content="月梦"><meta name="copyright" content="月梦"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="IO也就是Input&#x2F;Output ，数据拿到计算机内存中的过程即为输入，反之，数据从内存输出到外部存储（可以是远程主机、磁盘、数据库等）的过程即为输出。数据传输过程类似于水流，因此称作IO流。IO流在Java中分为输出流和输入流，根据数据的处理方式又分为字节流和字符流。（这里的输入输出是以程序为中心的，输入指程序接收输入，输出指程序把数据输出到外部存储）   Java IO流Java IO流有四">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java IO知识总结">
+<meta property="og:url" content="https://ymiir.top/posts/1236821b.html">
+<meta property="og:site_name" content="月梦の技术博客">
+<meta property="og:description" content="IO也就是Input&#x2F;Output ，数据拿到计算机内存中的过程即为输入，反之，数据从内存输出到外部存储（可以是远程主机、磁盘、数据库等）的过程即为输出。数据传输过程类似于水流，因此称作IO流。IO流在Java中分为输出流和输入流，根据数据的处理方式又分为字节流和字符流。（这里的输入输出是以程序为中心的，输入指程序接收输入，输出指程序把数据输出到外部存储）   Java IO流Java IO流有四">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg">
+<meta property="article:published_time" content="2023-12-06T11:50:00.000Z">
+<meta property="article:modified_time" content="2024-08-01T17:13:00.206Z">
+<meta property="article:author" content="月梦">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg"><link rel="shortcut icon" href="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg"><link rel="canonical" href="https://ymiir.top/posts/1236821b.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java IO知识总结',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-08-02 01:13:00'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg" onerror="onerror=null;src='https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301332668.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://z1.ax1x.com/2023/12/01/pisYxbD.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="月梦の技术博客"><span class="site-name">月梦の技术博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java IO知识总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-12-06T11:50:00.000Z" title="发表于 2023-12-06 19:50:00">2023-12-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-01T17:13:00.206Z" title="更新于 2024-08-02 01:13:00">2024-08-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java IO知识总结"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>IO也就是<code>Input/Output</code> ，数据拿到计算机内存中的过程即为输入，反之，数据从内存输出到外部存储（可以是远程主机、磁盘、数据库等）的过程即为输出。数据传输过程类似于水流，因此称作IO流。IO流在Java中分为输出流和输入流，根据数据的处理方式又分为字节流和字符流。（这里的输入输出是以程序为中心的，输入指程序接收输入，输出指程序把数据输出到外部存储）  </p>
+<h2 id="Java-IO流"><a href="#Java-IO流" class="headerlink" title="Java IO流"></a>Java IO流</h2><p>Java IO流有四个基类，分别是输入流<code>InputStream</code>（字节输入流），<code>Reader</code>（字符输入流），<code>OutputStream</code>（字节输出流），<code>Writer</code>（字符输出流），其余的IO相关类都是派生于这四个抽象基类。  </p>
+<h3 id="字节流与字符流"><a href="#字节流与字符流" class="headerlink" title="字节流与字符流"></a>字节流与字符流</h3><p>字节流：  </p>
+<ol>
+<li>以字节为单位处理数据，适用于处理二进制数据  </li>
+<li>直接操作字节，不涉及编码转换，可以处理任何类型的数据</li>
+</ol>
+<p>字符流：  </p>
+<ol>
+<li>以字符为单位处理数据，适合处理文本数据  </li>
+<li>自动处理字符编码和解码（将字节传为字符）  </li>
+<li>性能逊于字节流处理，因为还有编解码消耗  </li>
+<li>对于不知道编码类型的数据，使用字节流处理会带来乱码问题，而使用字符流就不会出现这样的问题</li>
+</ol>
+<h2 id="字节流"><a href="#字节流" class="headerlink" title="字节流"></a>字节流</h2><h3 id="InputStream"><a href="#InputStream" class="headerlink" title="InputStream"></a>InputStream</h3><p><code>InputStream</code>用于从源读取字节流到内存中，它是一个抽象类，是所有字节输入流的父类。  </p>
+<h4 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h4><ol>
+<li><code>read()</code>:返回输入流中下一个字节的数据，如果未读取任何字节，返回<code>-1</code>，表示结束  </li>
+<li><code>read(byte b[])</code>:从输入流中读取一些字节放到字节数组<code>b</code>中，如果数组<code>b</code>的长度为0，则不读取，如果没有可以读取的字节，返回<code>-1</code>。最多可以读<code>b.length</code>个字节，返回读取的字节数  </li>
+<li><code>read(byte b[], int off, int len)</code>:<code>off</code>是偏移量，<code>len</code>是指定的要读取的最大字节数，其余与<code>read(byte b[])</code>一致（这里的偏移量<code>off</code>是针对字节数组<code>b</code>的，加入偏移为2，则从<code>b</code>的第3个下标开始填充）  </li>
+<li><code>skip(long n)</code>:忽略输入流中的<code>n</code>个字节，返回实际忽略的字节数  </li>
+<li><code>avaliable()</code>:返回输入流中可以读取的字节数  </li>
+<li><code>close()</code>:关闭输入流并释放资源</li>
+<li><code>readAllBytes()</code>:读取输入流中的所有字节，返回字节数组  </li>
+<li><code>readNBytes(byte[] b, int off, int len)</code>:阻塞直到读取<code>len</code>个字节  </li>
+<li><code>transferTo(OutputStream out)</code>:将所有字节流从一个输入流传递到一个输出流，输出流自动写入</li>
+</ol>
+<p>使用的输入文件为<code>text.txt</code>:  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hello,world!</span><br><span class="line">sjska</span><br><span class="line">12345678910</span><br><span class="line">qpwoeiruty</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;text.txt&quot;</span>;</span><br><span class="line"><span class="type">FileInputStream</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(filePath);</span><br><span class="line">System.out.println(file.available());</span><br><span class="line"><span class="comment">// 输出输入流中可以读取的字节数 44</span></span><br><span class="line"></span><br><span class="line"><span class="type">byte</span>[] bytes = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">10</span>];</span><br><span class="line">file.read(bytes);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">byte</span> b : bytes)&#123;</span><br><span class="line">    System.out.println(b);</span><br><span class="line">    System.out.println(Character.toChars(b));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输出bytes数组的内容，依次输出 104 h 101 e 108 l 108 l 111 o 44 , 119 w 111 o 114 r 108 l</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="variable">read</span> <span class="operator">=</span> file.read();</span><br><span class="line">System.out.println(Character.toChars(read));</span><br><span class="line"><span class="comment">// 读取了一个字节，输出 d</span></span><br><span class="line"></span><br><span class="line"><span class="type">byte</span>[] bytes1 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">7</span>];</span><br><span class="line">file.read(bytes1, <span class="number">2</span>,<span class="number">5</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">byte</span> b : bytes1)&#123;</span><br><span class="line">    System.out.println(b);</span><br><span class="line">    System.out.println(Character.toChars(b));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 读取5个字节，并且偏移量为2，输出bytes1数组的内容，依次输出</span></span><br><span class="line"><span class="comment">// 0 0 33 ! 13 10 115 s 106 j</span></span><br><span class="line"><span class="comment">// bytes1数组的前两个字节偏移了，为空，13和10分别表示换行符和回车符</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 跳过4个字节</span></span><br><span class="line">file.skip(<span class="number">4</span>);</span><br><span class="line">file.read(bytes);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">byte</span> b : bytes)&#123;</span><br><span class="line">    System.out.println(b);</span><br><span class="line">    System.out.println(Character.toChars(b));</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 再读取10个字节存在bytes中，其内容为</span></span><br><span class="line"><span class="comment">// 10 49 1 50 2 51 3 52 4 53 5 54 6 55 7 56 8 57 9</span></span><br><span class="line"><span class="comment">// 第一个10是回车符，它之前的换行符已经被skip跳过了</span></span><br><span class="line"><span class="comment">// 之后的1~9为存储的文本，49~57为其对应的ASCII码</span></span><br><span class="line"></span><br><span class="line"><span class="type">String</span> <span class="variable">outFilePath</span> <span class="operator">=</span> <span class="string">&quot;text1.txt&quot;</span></span><br><span class="line"><span class="type">OutputStream</span> <span class="variable">fileOut</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;outFilePath&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将输入流file中的字节全部放入输出流fileOut</span></span><br><span class="line">file.transferTo(fileOut);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果没有执行transferTo方法，这里读取输入流中剩余全部字符放在返回的字符数组中</span></span><br><span class="line"><span class="comment">// 但是执行了transferTo，输入流中已经没有字节了，所以什么都没读到</span></span><br><span class="line"><span class="type">byte</span>[] bytes2 = file.readAllBytes();</span><br><span class="line"><span class="keyword">for</span>(<span class="type">byte</span> b : bytes2)&#123;</span><br><span class="line">    System.out.println(b);</span><br><span class="line">    System.out.println(Character.toChars(b));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出文件<code>text1.txt</code>:  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">10</span><br><span class="line">qpwoeiruty</span><br></pre></td></tr></table></figure>
+
+<h3 id="OutputStream"><a href="#OutputStream" class="headerlink" title="OutputStream"></a>OutputStream</h3><p>字节输出流，将字节输出到指定地方（文件等地），<code>OutputStream</code>是所有字节输出流的父类。  </p>
+<h4 id="常用方法-1"><a href="#常用方法-1" class="headerlink" title="常用方法"></a>常用方法</h4><ol>
+<li><code>write(int b)</code>:将特定字节写入到输出流  </li>
+<li><code>write(byte b[])</code>:将字节数组<code>b</code>写入到输出流  </li>
+<li><code>write(byte b[], int off, int len)</code>:增加了<code>off</code>偏移量以及<code>len</code>（要写入的最大字节数），与字节输入流相同，这里的<code>off</code>也是对于字节数组<code>b</code>来说  </li>
+<li><code>flush()</code>:刷新此输出流并强制写出所有缓冲的输出字节  </li>
+<li><code>close()</code>:关闭输出流并释放资源</li>
+</ol>
+<p><code>FileOutputStream</code>是使用最多的字节输出流对象，用于将字节写入到文件中，当调用<code>write</code>方法的时候，首先将数据写入到<code>FileOutputStream</code>的内存缓冲区，当缓冲区满、手动调用<code>flush</code>方法、手动调用<code>close</code>方法（其实也是触发了<code>flush</code>方法的调用）、程序退出触发<code>close</code>方法时，才会把数据写入到文件中。  </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;test.txt&quot;</span>;</span><br><span class="line"><span class="type">FileOutputStream</span> <span class="variable">fis</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(filePath);</span><br><span class="line"><span class="comment">// 将 Z 写入到输出流</span></span><br><span class="line">fis.write(<span class="number">90</span>);</span><br><span class="line"><span class="comment">// 往输出流写入换行符</span></span><br><span class="line">fis.write(<span class="number">10</span>);</span><br><span class="line"><span class="comment">// 网输出流写入回车</span></span><br><span class="line">fis.write(<span class="number">13</span>);</span><br><span class="line"><span class="comment">// 往输出流写入 hello,world!</span></span><br><span class="line"><span class="type">byte</span>[] bytes = <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;hello,world!&quot;</span>).getBytes();</span><br><span class="line">fis.write(bytes);</span><br><span class="line">fis.write(<span class="number">10</span>);</span><br><span class="line"><span class="comment">// 偏移量为3，网输出流写入字节数组</span></span><br><span class="line">fis.write(bytes,<span class="number">3</span>,<span class="number">9</span>);</span><br></pre></td></tr></table></figure>
+<p>得到的输出文件&#96;test.txt”:  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Z</span><br><span class="line"></span><br><span class="line">hello,world!</span><br><span class="line">lo,world!</span><br></pre></td></tr></table></figure>
+
+<h2 id="字符流"><a href="#字符流" class="headerlink" title="字符流"></a>字符流</h2><p>基于字节流的IO若不知道编码方式就容易出现乱码问题，字符流对象方便我们对字符进行流操作，对于音频、视频、图片等媒体文件建议使用字节流进行处理，而对于文本文件建议使用字符流进行处理。  </p>
+<p>字符流默认采用的编码方式是<code>Unicode</code>编码。  </p>
+<h3 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h3><p><code>Reader</code>用于从文件读取字符流到内存，它是所有字符输入流的父类。  </p>
+<h4 id="常用方法-2"><a href="#常用方法-2" class="headerlink" title="常用方法"></a>常用方法</h4><ol>
+<li><code>read()</code>:从输入流读取一个字符  </li>
+<li><code>read(char[] cbuf)</code>:用于从输入流读取字符到字符数组<code>cbuf</code>中  </li>
+<li><code>read(char[] cbuf, int off, int len)</code>:用于从输入流读取字符到字符数组<code>cbuf</code>中，并增加了偏移量<code>off</code>以及读取的字符数量<code>len</code>  </li>
+<li><code>skip(long n)</code>:忽略输入流中的<code>n</code>个字符，返回实际忽略的字符数量  </li>
+<li><code>close()</code>:关闭输入流并释放资源</li>
+</ol>
+<p><code>FileReader</code>是使用较多的字符输入流。  </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 文件使用上面的 test.txt</span></span><br><span class="line"><span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;test.txt&quot;</span>;</span><br><span class="line"><span class="type">FileReader</span> <span class="variable">fr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileReader</span>(filePath);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取一个字符，输出90，也就是Z</span></span><br><span class="line">System.out.println(fr.read());</span><br><span class="line"><span class="type">char</span> [] cBuf = <span class="keyword">new</span> <span class="title class_">char</span>[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取一系列字符串到字符数组中</span></span><br><span class="line"><span class="comment">// 依次输出 换行符 回车符 h e l l o , w o</span></span><br><span class="line">fr.read(cBuf);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">char</span> c : cBuf)&#123;</span><br><span class="line">    System.out.println(c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 跳过一个字符</span></span><br><span class="line">fr.skip(<span class="number">1</span>);</span><br><span class="line"><span class="type">char</span> [] cBuf1 = <span class="keyword">new</span> <span class="title class_">char</span>[<span class="number">6</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 读取4个字符串到字符数组中，偏移量为2</span></span><br><span class="line"><span class="comment">// 输出 空 空 l d ! 换行符</span></span><br><span class="line">fr.read(cBuf1,<span class="number">2</span>,<span class="number">4</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">char</span> c : cBuf1)&#123;</span><br><span class="line">    System.out.println(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Writer"><a href="#Writer" class="headerlink" title="Writer"></a>Writer</h3><p><code>Writer</code>用于将字符输出到文件中，它是所有字符输出流的父类。  </p>
+<h4 id="常用方法-3"><a href="#常用方法-3" class="headerlink" title="常用方法"></a>常用方法</h4><ol>
+<li><code>write(int c)</code>:向输出流写入单个字符  </li>
+<li><code>write(char[] cbuf)</code>:向输出流写入字符数组  </li>
+<li><code>write(char[] cbuf, int off, int len)</code>:向输出流写入字符数组，并包含偏移量<code>off</code>以及字符数量<code>len</code>  </li>
+<li><code>write(String str)</code>:向输出流写入字符串</li>
+<li><code>write(String str, int off, int len)</code>:向输出流写入字符串，并且包含偏移量<code>off</code>以及字符数量<code>len</code>  </li>
+<li><code>append(CharSequence csq)</code>:将指定的字符序列<code>csp</code>附加到指定的<code>Writer</code>对象并返回该<code>Writer</code>对象  </li>
+<li><code>append(char c)</code>:将指定的字符附加到指定的<code>Writer</code>对象并返回该<code>Writer</code>对象  </li>
+<li><code>flush()</code>:刷新该输出流，强制输出所有缓冲的输出字符</li>
+<li><code>close()</code>:关闭输出流并释放资源</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;simple.txt&quot;</span>;</span><br><span class="line"><span class="type">FileWriter</span> <span class="variable">fw</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileWriter</span>(filePath);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向输出流写入字母Z</span></span><br><span class="line">fw.write(<span class="number">90</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入字符串 hello,world!</span></span><br><span class="line">fw.write(<span class="string">&quot;hello,world!&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"><span class="type">char</span>[] charArray = <span class="string">&quot;the night&quot;</span>.toCharArray();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入字符数组</span></span><br><span class="line">fw.write(charArray);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入字符串，偏移量2，写入5个字符</span></span><br><span class="line"><span class="comment">// 因此写入的是 34567</span></span><br><span class="line">fw.write(<span class="string">&quot;123456789&quot;</span>,<span class="number">2</span>,<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入字符数组，偏移量4，写入2个字符</span></span><br><span class="line"><span class="comment">// 因此写入的是 ni</span></span><br><span class="line">fw.write(charArray,<span class="number">4</span>,<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"><span class="type">CharSequence</span> <span class="variable">cs</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;char sequence&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写入换行符</span></span><br><span class="line">fw.write(<span class="number">13</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在输出流后追加字符序列 char sequence</span></span><br><span class="line"><span class="type">Writer</span> <span class="variable">append</span> <span class="operator">=</span> fw.append(cs);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 刷新字符输入流</span></span><br><span class="line">append.flush();</span><br></pre></td></tr></table></figure>
+<p>最终得到的<code>simple.txt</code>内容如下：  </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Z</span><br><span class="line">hello,world!</span><br><span class="line">the night</span><br><span class="line">34567</span><br><span class="line">ni</span><br><span class="line"></span><br><span class="line">char sequence</span><br></pre></td></tr></table></figure>
+
+<h2 id="缓冲流"><a href="#缓冲流" class="headerlink" title="缓冲流"></a>缓冲流</h2><p>由于IO操作很耗时，所以采用缓冲流，一次写入&#x2F;读出多个字节，从而避免频繁的IO操作，提高流的传输效率。  </p>
+<h3 id="字节缓冲流"><a href="#字节缓冲流" class="headerlink" title="字节缓冲流"></a>字节缓冲流</h3><p>字节缓冲流采用<strong>装饰器模式</strong>来增强<code>InputStream</code>和<code>OutputStream</code>子类对象的功能。</p>
+<p>Java的输入输出流有自带的内部缓冲区，为什么还需要字节缓冲流？  </p>
+<ol>
+<li>内部缓冲区的大小固定且较小，而字节缓冲流可以自定义缓冲区大小，更灵活  </li>
+<li>字节缓冲区性能更高</li>
+</ol>
+<h4 id="BufferedInputStream"><a href="#BufferedInputStream" class="headerlink" title="BufferedInputStream"></a>BufferedInputStream</h4><p><code>BufferedInputStream</code>从源头读取数据到内存的过程不会一个字节一个字节读取，而是会先将读取到的字节存放在缓冲区，并从内部缓冲区中单独读取字节，大大减少IO次数，提高了读取效率。  </p>
+<p><strong>这里的缓冲区减少的是系统调用的次数，而不是磁盘IO的次数，从而提高读取效率。</strong>  </p>
+<p><code>BufferedInputStream</code>维护的缓冲区其实是一个字节数组，并且默认的缓冲区大小为8192字节，但是可以在<code>BufferedInputStream</code>对象构造时传入<code>size</code>作为缓冲区大小。  </p>
+<h5 id="性能对比"><a href="#性能对比" class="headerlink" title="性能对比"></a>性能对比</h5><p>读取571MB的文件，每次读取一字节：  </p>
+<ol>
+<li><code>FileInputStream</code>耗时<code>833447</code>毫秒  </li>
+<li><code>BufferedInputStream</code>耗时<code>9910</code>毫秒<br>可以看到，其读取效率提升是相当巨大的</li>
+</ol>
+<p>读取571MB的文件，每次读取长度为2000的字节数组：  </p>
+<ol>
+<li><code>FileInputStream</code>耗时<code>571</code>毫秒</li>
+<li><code>BufferedInputStream</code>耗时<code>391</code>毫秒</li>
+</ol>
+<p>经测试，这个用于接收的字节数组越小，两种方式的性能差异越大，当字节数组足够大，<code>FileInputStream</code>的读取效率可能会比<code>BufferedInputStream</code>更高。  </p>
+<p>我认为，造成这一情况的原因如下，当用于接收的字节数组大小等于<code>BufferedInputStream</code>的默认缓冲区大小的时候，两种读取方式所产生的系统调用数量是一样的，这相当于缓冲区形同虚设了；而对于一次只读取一个字节的情况来说，没有缓冲区则每次去内核缓冲区拿数据，有缓冲区则每次去缓冲区拿数据，无需系统调用，大大减少了系统调用的次数，因此<code>BufferedInputStream</code>效率更高。**<code>BufferedInputStream</code>减少的实际上是系统调用的次数**  </p>
+<h4 id="BufferedOutputStream"><a href="#BufferedOutputStream" class="headerlink" title="BufferedOutputStream"></a>BufferedOutputStream</h4><p><code>BufferedOutputStream</code>是字节缓冲输出流，首先将字节写入到缓冲区中，再从缓冲区写入到文件中，大大减少了IO次数。<br><code>BufferedOutputStream</code>缓冲区的默认大小也是8192字节  </p>
+<h3 id="字符缓冲流"><a href="#字符缓冲流" class="headerlink" title="字符缓冲流"></a>字符缓冲流</h3><p>字符缓冲流<code>BufferedReader</code>和<code>BufferedWriter</code>与字节缓冲流类似，只不过它们操作的数据变成了字符。  </p>
+<p>在使用Java处理标准输入流时，使用 <code>Scanner</code> 来处理会很慢，如果受到时间限制，应该采用 <code>BufferedReader</code> 更好。（例如2024-3-9美团春招笔试题第二题，<code>Scanner</code> 只能过一小部分用例，而采用 <code>BufferedReader</code> 则直接AC）  </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">InputStreamReader</span> <span class="variable">isr</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(System.in);</span><br><span class="line"><span class="type">BufferedReader</span> <span class="variable">br</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(isr);</span><br><span class="line">String[] strs = br.readLine().split(<span class="string">&quot; &quot;</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;strs.length;i++)&#123;</span><br><span class="line">    <span class="type">Integer</span> <span class="variable">num</span> <span class="operator">=</span> Integer.parseInt(strs[i]);</span><br><span class="line">    System.out.printf(<span class="string">&quot;%d %s\n&quot;</span>,num,num.getClass());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先批量读入字符串，再使用基本类型包装类的 <code>parseInt</code> 等方法将字符串转为数字。</p>
+<h2 id="随机访问流"><a href="#随机访问流" class="headerlink" title="随机访问流"></a>随机访问流</h2><p><code>RandomAccessFile</code>支持随意跳转到文件的任意位置进行读写，在创建<code>RandomAccessFile</code>对象时可以指定读写模式<code>mode</code>  </p>
+<ol>
+<li><code>r</code>:只读模式  </li>
+<li><code>rw</code>:读写模式  </li>
+<li><code>rws</code>:同步更新对“文件的内容”或“元数据”的修改到外部存储设备</li>
+<li><code>rwd</code>:同步更新对“文件的内容”的修改到外部存储设备</li>
+</ol>
+<h3 id="常用方法-4"><a href="#常用方法-4" class="headerlink" title="常用方法"></a>常用方法</h3><ol>
+<li><code>seek(long pos)</code>:指定写入或者读取字节的位置（偏移量）  </li>
+<li><code>getFilePointer()</code>:得到当前的偏移量</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;test1.txt&quot;</span>;</span><br><span class="line"><span class="type">RandomAccessFile</span> <span class="variable">raf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RandomAccessFile</span>(filePath,<span class="string">&quot;rws&quot;</span>);</span><br><span class="line"><span class="type">byte</span>[] bytes = <span class="string">&quot;hello,worle!ssssssssssssssssssaaaaaaaaaaaaaaaaeeeeeeeeeeee&quot;</span>.getBytes();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向文件写入字符串 hello,worle!ssssssssssssssssssaaaaaaaaaaaaaaaaeeeeeeeeeeee</span></span><br><span class="line">raf.write(bytes);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 此时的指针位置在 58 ，也就是文件末尾</span></span><br><span class="line">System.out.println(raf.getFilePointer());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过 seek 方法把指针移到 0 位置，也就是文件开头</span></span><br><span class="line">raf.seek(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 0 </span></span><br><span class="line">System.out.println(raf.getFilePointer());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 分别输出 h e l</span></span><br><span class="line">System.out.println(Character.toChars(raf.read()));</span><br><span class="line">System.out.println(Character.toChars(raf.read()));</span><br><span class="line">System.out.println(Character.toChars(raf.read()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 把指针移至 20 位置</span></span><br><span class="line">raf.seek(<span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 20</span></span><br><span class="line">System.out.println(raf.getFilePointer());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 分别输出 s s</span></span><br><span class="line">System.out.println(Character.toChars(raf.read()));</span><br><span class="line">System.out.println(Character.toChars(raf.read()));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 22</span></span><br><span class="line">System.out.println(raf.getFilePointer());</span><br></pre></td></tr></table></figure>
+<p>可以看到，偏移量置0为文件开头  </p>
+<p>如上就是Java中输入输出流的常用类以及常用操作啦，其余的类操作应该也是类似的，可以举一反三！  </p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://ymiir.top">月梦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://ymiir.top/posts/1236821b.html">https://ymiir.top/posts/1236821b.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://ymiir.top" target="_blank">月梦の技术博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"><div class="social-share" data-image="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/6c7f5f4e.html" title="RPC协议介绍"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">RPC协议介绍</div></div></a></div><div class="next-post pull-right"><a href="/posts/b33c725c.html" title="一致性哈希算法"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">一致性哈希算法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/29f40393.html" title="Java反射机制"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-01</div><div class="title">Java反射机制</div></div></a></div><div><a href="/posts/48fea39d.html" title="Spring框架的理解与总结"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-09</div><div class="title">Spring框架的理解与总结</div></div></a></div><div><a href="/posts/a5f6c176.html" title="Java ReentrantLock原理"><img class="cover" src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-28</div><div class="title">Java ReentrantLock原理</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301324150.jpg" onerror="this.onerror=null;this.src='https://ymiirtop.oss-cn-beijing.aliyuncs.com/202504301332668.jpg'" alt="avatar"/></div><div class="author-info__name">月梦</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">23</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lim-yoona"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lim-yoona" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:ymiirtop@sina.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">月梦の技术博客，欢迎大佬来访！</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-IO%E6%B5%81"><span class="toc-number">1.</span> <span class="toc-text">Java IO流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E6%B5%81%E4%B8%8E%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="toc-number">1.1.</span> <span class="toc-text">字节流与字符流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E6%B5%81"><span class="toc-number">2.</span> <span class="toc-text">字节流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#InputStream"><span class="toc-number">2.1.</span> <span class="toc-text">InputStream</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.1.</span> <span class="toc-text">常用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OutputStream"><span class="toc-number">2.2.</span> <span class="toc-text">OutputStream</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">常用方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E6%B5%81"><span class="toc-number">3.</span> <span class="toc-text">字符流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Reader"><span class="toc-number">3.1.</span> <span class="toc-text">Reader</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-2"><span class="toc-number">3.1.1.</span> <span class="toc-text">常用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Writer"><span class="toc-number">3.2.</span> <span class="toc-text">Writer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-3"><span class="toc-number">3.2.1.</span> <span class="toc-text">常用方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%93%E5%86%B2%E6%B5%81"><span class="toc-number">4.</span> <span class="toc-text">缓冲流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E8%8A%82%E7%BC%93%E5%86%B2%E6%B5%81"><span class="toc-number">4.1.</span> <span class="toc-text">字节缓冲流</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BufferedInputStream"><span class="toc-number">4.1.1.</span> <span class="toc-text">BufferedInputStream</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94"><span class="toc-number">4.1.1.1.</span> <span class="toc-text">性能对比</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BufferedOutputStream"><span class="toc-number">4.1.2.</span> <span class="toc-text">BufferedOutputStream</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E7%BC%93%E5%86%B2%E6%B5%81"><span class="toc-number">4.2.</span> <span class="toc-text">字符缓冲流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%B5%81"><span class="toc-number">5.</span> <span class="toc-text">随机访问流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95-4"><span class="toc-number">5.1.</span> <span class="toc-text">常用方法</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/8bd819b4.html" title="ymdb-一个分布式键值存储系统"><img src="https://s11.ax1x.com/2024/02/17/pFJnTYQ.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ymdb-一个分布式键值存储系统"/></a><div class="content"><a class="title" href="/posts/8bd819b4.html" title="ymdb-一个分布式键值存储系统">ymdb-一个分布式键值存储系统</a><time datetime="2024-05-02T11:50:00.000Z" title="发表于 2024-05-02 19:50:00">2024-05-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a5f6c176.html" title="Java ReentrantLock原理"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java ReentrantLock原理"/></a><div class="content"><a class="title" href="/posts/a5f6c176.html" title="Java ReentrantLock原理">Java ReentrantLock原理</a><time datetime="2024-04-28T11:50:00.000Z" title="发表于 2024-04-28 19:50:00">2024-04-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/fb40efc5.html" title="拓扑排序"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="拓扑排序"/></a><div class="content"><a class="title" href="/posts/fb40efc5.html" title="拓扑排序">拓扑排序</a><time datetime="2024-03-25T11:50:00.000Z" title="发表于 2024-03-25 19:50:00">2024-03-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/48fea39d.html" title="Spring框架的理解与总结"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Spring框架的理解与总结"/></a><div class="content"><a class="title" href="/posts/48fea39d.html" title="Spring框架的理解与总结">Spring框架的理解与总结</a><time datetime="2024-03-09T11:50:00.000Z" title="发表于 2024-03-09 19:50:00">2024-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/aec78dbb.html" title="Raft 共识算法总结"><img src="https://z1.ax1x.com/2023/12/01/pisYxbD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Raft 共识算法总结"/></a><div class="content"><a class="title" href="/posts/aec78dbb.html" title="Raft 共识算法总结">Raft 共识算法总结</a><time datetime="2024-02-13T11:50:00.000Z" title="发表于 2024-02-13 19:50:00">2024-02-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By 月梦</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><imgsrc="https://haiyong.site/img/icp.png"> <a href="https://beian.miit.gov.cn/#/Integrated/index"  style="color:white" target="_blank">陕ICP备2024037249号-1</a> | <a href="https://beian.mps.gov.cn/#/"  style="color:white" target="_blank">京公网安备11010802044980号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '5CRP1aMpDr9cZeJmB43Ipp5h-gzGzoHsz',
+      appKey: 'vXVvSrnv8vgU3pnWNyOfw6K4',
+      avatar: '',
+      serverURLs: 'https://5crp1amp.lc-cn-n1-shared.com',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
